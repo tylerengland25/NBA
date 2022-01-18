@@ -29,9 +29,10 @@ def scrape_month(season, month):
     html = urlopen(url)
     soup = BeautifulSoup(html, features="lxml")
 
-    # Month datframe
-    month_df = pd.DataFrame(columns=['date', 'visitor', 'home', 'visitor_q1', 'home_q1', 'visitor_q2', 'home_q2',
-                                     'visitor_q3', 'home_q3', 'visitor_q4', 'home_q4', 'visitor_final', 'home_final'])
+    # Month dataframe
+    month_df = pd.DataFrame(
+        columns=['date', 'visitor', 'home', 'visitor_q1', 'home_q1', 'visitor_q2', 'home_q2',
+                 'visitor_q3', 'home_q3', 'visitor_q4', 'home_q4', 'visitor_final', 'home_final'])
 
     # Find games and iterate to find scoring data
     games = soup.find("table").find_all("tr")[1:]
@@ -52,8 +53,9 @@ def scrape_month(season, month):
 def scrape_season(season, months):
     print(season)
     # Season dataframe
-    season_df = pd.DataFrame(columns=['date', 'visitor', 'home', 'visitor_q1', 'home_q1', 'visitor_q2', 'home_q2',
-                                      'visitor_q3', 'home_q3', 'visitor_q4', 'home_q4', 'visitor_final', 'home_final'])
+    season_df = pd.DataFrame(
+        columns=['date', 'visitor', 'home', 'visitor_q1', 'home_q1', 'visitor_q2', 'home_q2',
+                 'visitor_q3', 'home_q3', 'visitor_q4', 'home_q4', 'visitor_final', 'home_final'])
 
     for month in months:
         season_df = season_df.append(scrape_month(season + 1, month), ignore_index=True)
@@ -62,18 +64,19 @@ def scrape_season(season, months):
 
 
 def main():
-    df = pd.DataFrame(columns=['date', 'visitor', 'home', 'visitor_q1', 'home_q1', 'visitor_q2', 'home_q2',
-                               'visitor_q3', 'home_q3', 'visitor_q4', 'home_q4', 'visitor_final', 'home_final'])
+    df = pd.DataFrame(
+        columns=['date', 'visitor', 'home', 'visitor_q1', 'home_q1', 'visitor_q2', 'home_q2',
+                 'visitor_q3', 'home_q3', 'visitor_q4', 'home_q4', 'visitor_final', 'home_final'])
 
     seasons = list(range(2006, 2021))
     months = ["october", "november", "december", "january", "february", "march", "april", "may", "june"]
     holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
     covid_months = [["october-2019", "november", "december", "january", "february",
-                    "march", "july", "august", "september", "october-2020"],
+                     "march", "july", "august", "september", "october-2020"],
                     ["december", "january", "february", "march", "april", "may", "june", "july"]]
     for season in seasons:
         if season == 2011:
-            df = df.append(scrape_season(season, holdout_months), ignore_index= True)
+            df = df.append(scrape_season(season, holdout_months), ignore_index=True)
         elif season == 2019:
             df = df.append(scrape_season(season, covid_months[0]), ignore_index=True)
         elif season == 2020:
