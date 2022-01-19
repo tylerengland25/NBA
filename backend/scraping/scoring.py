@@ -39,7 +39,7 @@ def scrape_month(season, month):
     for game in games:
         row_data = game.find_all(["th", "td"])
         if len(row_data) > 1:
-            print("\t\t" + str(row_data[0].text))
+            print("\t\t" + str(row_data[0].text) + ", " + row_data[2].text + " @ " + row_data[4].text)
             game_data = {'date': row_data[0].text,
                          'visitor': row_data[2].text, 'visitor_final': row_data[3].text,
                          'home': row_data[4].text, 'home_final': row_data[5].text}
