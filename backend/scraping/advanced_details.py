@@ -20,8 +20,7 @@ def scrape_game(link, meta_data):
 
     # Find advanced details table and return advanced stats for each player
     tables = soup.find_all('table')
-    advanced_tables = []
-    advanced_tables.extend([tables[7], tables[15]])
+    advanced_tables = [tables[7], tables[15]]
     for table in advanced_tables:
         # Starter: 1, Bench: 0
         starter = 1
@@ -101,8 +100,6 @@ def main():
                  'orb_perc', 'drb_perc', 'trb_perc', 'ast_perc', 'stl_perc', 'blk_perc', 'tov_perc', 'usg_perc', 'ortg',
                  'drtg', 'bpm'])
 
-    seasons = [2006]
-    months = ["october"]
     seasons = list(range(2006, 2021))
     months = ["october", "november", "december", "january", "february", "march", "april", "may", "june"]
     holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
