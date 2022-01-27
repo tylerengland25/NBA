@@ -34,6 +34,14 @@ def scrape_game(link):
                 quarter = 'q3'
             elif data[0] == '4th':
                 quarter = 'q4'
+            elif data[0] == 'OT':
+                quarter = 'ot1'
+            elif data[0] == '2OT':
+                quarter = 'ot2'
+            elif data[0] == '3OT':
+                quarter = 'ot3'
+            elif data[0] == '4OT':
+                quarter = 'ot4'
             else:
                 quarter = 'total'
 
@@ -59,7 +67,7 @@ def scrape_month(season, month):
 
     # Month datframe
     stats = ['fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc', 'ast', 'ast_perc']
-    quarters = ['q1', 'q2', 'q3', 'q4', 'total']
+    quarters = ['q1', 'q2', 'q3', 'q4', 'ot1', 'ot2', 'ot3', 'ot4', 'total']
     teams = ['visitor', 'home']
     quarter_stats = [stat + '_' + team + '_' + quarter for quarter in quarters for stat in stats for team in teams]
     cols = ['date', 'visitor', 'home'] + quarter_stats
@@ -83,7 +91,7 @@ def scrape_season(season, months):
     print(season)
     # Season dataframe
     stats = ['fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc', 'ast', 'ast_perc']
-    quarters = ['q1', 'q2', 'q3', 'q4', 'total']
+    quarters = ['q1', 'q2', 'q3', 'q4', 'ot1', 'ot2', 'ot3', 'ot4', 'total']
     teams = ['visitor', 'home']
     quarter_stats = [stat + '_' + team + '_' + quarter for quarter in quarters for stat in stats for team in teams]
     cols = ['date', 'visitor', 'home'] + quarter_stats
@@ -99,7 +107,7 @@ def scrape_season(season, months):
 def main():
     # Create main shooting dataframe
     stats = ['fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc', 'ast', 'ast_perc']
-    quarters = ['q1', 'q2', 'q3', 'q4', 'total']
+    quarters = ['q1', 'q2', 'q3', 'q4', 'ot1', 'ot2', 'ot3', 'ot4', 'total']
     teams = ['visitor', 'home']
     quarter_stats = [stat + '_' + team + '_' + quarter for quarter in quarters for stat in stats for team in teams]
     cols = ['date', 'visitor', 'home'] + quarter_stats

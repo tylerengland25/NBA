@@ -149,21 +149,10 @@ def main():
                          '3p', '3pa', '3p_perc', 'ft', 'fta', 'ft_perc', 'orb', 'drb', 'trb', 'ast', 'stl', 'blk',
                          'tov', 'pf', 'pts', 'plus_minus'])
 
-    seasons = list(range(2006, 2021))
+    seasons = [2006]
     months = ["october", "november", "december", "january", "february", "march", "april", "may", "june"]
-    holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
-    covid_months = [["october-2019", "november", "december", "january", "february",
-                     "march", "july", "august", "september", "october-2020"],
-                    ["december", "january", "february", "march", "april", "may", "june", "july"]]
     for season in seasons:
-        if season == 2011:
-            season_months = holdout_months
-        elif season == 2019:
-            season_months = covid_months[0]
-        elif season == 2020:
-            season_months = covid_months[1]
-        else:
-            season_months = months
+        season_months = months
 
         season_df = scrape_season(season, season_months)
         for key in df:
