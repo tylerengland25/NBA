@@ -19,6 +19,7 @@ def scrape_game(link, meta_data):
 
     # Find gamed details table and return total stats for each team
     tables = soup.find_all('table')
+    table_name_tags = [table.find('caption')]
     tables = [tables[0], tables[8]]
     for table in tables:
         totals_tag = table.find_all('tr')[-1].find_all('td')[1:-1]
@@ -78,21 +79,10 @@ def main():
                 columns=['date', 'visitor', 'home', 'team', 'fg', 'fga', 'fg_perc','3p', '3pa', '3p_perc',
                          'ft', 'fta', 'ft_perc', 'orb', 'drb', 'trb', 'ast', 'stl', 'blk', 'tov', 'pf', 'pts'])
 
-    seasons = list(range(2006, 2021))
-    months = ["october", "november", "december", "january", "february", "march", "april", "may", "june"]
-    holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
-    covid_months = [["october-2019", "november", "december", "january", "february",
-                     "march", "july", "august", "september", "october-2020"],
-                    ["december", "january", "february", "march", "april", "may", "june", "july"]]
+    seasons = [2006]
+    months = ["november"]
     for season in seasons:
-        if season == 2011:
-            df = df.append(scrape_season(season, holdout_months), ignore_index=True)
-        elif season == 2019:
-            df = df.append(scrape_season(season, covid_months[0]), ignore_index=True)
-        elif season == 2020:
-            df = df.append(scrape_season(season, covid_months[1]), ignore_index=True)
-        else:
-            df = df.append(scrape_season(season, months), ignore_index=True)
+        df = df.append(scrape_season(season, months), ignore_index=True)
 
         df.to_csv('backend/data/game_details_total.csv')
 
