@@ -43,7 +43,7 @@ def scrape_game(link, meta_data):
     soup = BeautifulSoup(html, features="lxml")
 
     # Home: 1, Visitor: 0
-    team = 0
+    team = False
 
     # Find players table and return player stats for each team
     label = 0
@@ -72,7 +72,7 @@ def scrape_game(link, meta_data):
                 player_data = [td.text for td in player_tags]
                 if len(player_data) < 21 and detail_filename != 'advanced_details':
                     row = {'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
-                           'team': team, 'starter': starter, 'player': player_data[0], 'mp': 0,
+                           'team': int(team), 'starter': starter, 'player': player_data[0], 'mp': 0,
                            'fg': 0, 'fga': 0, 'fg_perc': 0, '3p': 0, '3pa': 0, '3p_perc': 0,
                            'ft': 0, 'fta': 0, 'ft_perc': 0, 'orb': 0, 'drb': 0, 'trb': 0,
                            'ast': 0, 'stl': 0, 'blk': 0, 'tov': 0, 'pf': 0, 'pts': 0, 'plus_minus': 0}
@@ -88,14 +88,14 @@ def scrape_game(link, meta_data):
                            'plus_minus': player_data[20]}
                 elif len(player_data) < 17 and detail_filename == 'advanced_details':
                     row = {'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
-                           'team': team, 'starter': starter, 'player': player_data[0], 'mp': 0,
+                           'team': int(team), 'starter': starter, 'player': player_data[0], 'mp': 0,
                            'ts_perc': 0, 'efg_perc': 0, '3par': 0, 'ftr': 0,
                            'orb_perc': 0, 'drb_perc': 0, 'trb_perc': 0, 'ast_perc': 0,
                            'stl_perc': 0, 'blk_perc': 0, 'tov_perc': 0, 'usg_perc': 0, 'ortg': 0,
                            'drtg': 0, 'bpm': 0}
                 else:
                     row = {'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
-                           'team': team, 'starter': starter, 'player': player_data[0], 'mp': player_data[1],
+                           'team': int(team), 'starter': starter, 'player': player_data[0], 'mp': player_data[1],
                            'ts_perc': player_data[2], 'efg_perc': player_data[3], '3par': player_data[4],
                            'ftr': player_data[5], 'orb_perc': player_data[6], 'drb_perc': player_data[7],
                            'trb_perc': player_data[8], 'ast_perc': player_data[9], 'stl_perc': player_data[10],
@@ -104,24 +104,25 @@ def scrape_game(link, meta_data):
                 players_df[detail_filename] = players_df[detail_filename].append(row, ignore_index=True)
 
         # Data for game totals
-        totals_tag = table.find_all('tr')[-1].find_all('td')[1:-1]
+        totals_tag = table.find_all('tr')[-1].find_all('td')
         totals = [td.text for td in totals_tag]
         if total_filename != 'advanced_totals':
             team_totals = {'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
-                           'team': team, 'fg': totals[0], 'fga': totals[1], 'fg_perc': totals[2], '3p': totals[3],
-                           '3pa': totals[4], '3p_perc': totals[5], 'ft': totals[6], 'fta': totals[7],
-                           'ft_perc': totals[8], 'orb': totals[9], 'drb': totals[10], 'trb': totals[11],
-                           'ast': totals[12], 'stl': totals[13], 'blk': totals[14], 'tov': totals[15], 'pf': totals[16],
-                           'pts': totals[17]}
+                           'team': int(team), 'fg': totals[1], 'fga': totals[2], 'fg_perc': totals[3], '3p': totals[4],
+                           '3pa': totals[5], '3p_perc': totals[6], 'ft': totals[7], 'fta': totals[8],
+                           'ft_perc': totals[9], 'orb': totals[10], 'drb': totals[11], 'trb': totals[12],
+                           'ast': totals[13], 'stl': totals[14], 'blk': totals[15], 'tov': totals[16], 'pf': totals[17],
+                           'pts': totals[18]}
         else:
             team_totals = {'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
-                           'team': team, 'ts_perc': totals[0], 'efg_perc': totals[1], '3par': totals[2],
-                           'ftr': totals[3], 'orb_perc': totals[4], 'drb_perc': totals[5], 'trb_perc': totals[6],
-                           'ast_perc': totals[7], 'stl_perc': totals[8], 'blk_perc': totals[9], 'tov_perc': totals[10],
-                           'usg_perc': totals[11], 'ortg': totals[12], 'drtg': totals[13]}
+                           'team': int(team), 'ts_perc': totals[1], 'efg_perc': totals[2], '3par': totals[3],
+                           'ftr': totals[4], 'orb_perc': totals[5], 'drb_perc': totals[6], 'trb_perc': totals[7],
+                           'ast_perc': totals[8], 'stl_perc': totals[9], 'blk_perc': totals[10], 'tov_perc': totals[11],
+                           'usg_perc': totals[12], 'ortg': totals[13], 'drtg': totals[14]}
         players_df[total_filename] = players_df[total_filename].append(team_totals, ignore_index=True)
 
-        team = 1 if label == -1 else 0
+        if label == -1:
+            team = not team
         label += 1
 
     return players_df
@@ -175,6 +176,10 @@ def scrape_month(season, month):
             print("\t\t" + str(row_data[0].text) + ", " + row_data[2].text + " @ " + row_data[4].text)
             game_data = {'date': row_data[0].text, 'visitor': row_data[2].text, 'home': row_data[4].text}
             link = row_data[6].a["href"]
+            if game_data['date'] == 'Sat, Aug 15, 2020' \
+                    and game_data['visitor'] == 'Memphis Grizzlies' \
+                    and game_data['home'] == 'Portland Trail Blazers':
+                print('Debug')
             players_df = scrape_game(link, game_data)
             for key in month_df:
                 month_df[key] = month_df[key].append(players_df[key], ignore_index=True)
@@ -256,14 +261,13 @@ def main():
                          'ortg', 'drtg'])
         else:
             df[game_totals_label[key] + '_totals'] = pd.DataFrame(
-                columns=['date', 'visitor', 'home', 'team', 'fg', 'fga', 'fg_perc','3p', '3pa', '3p_perc',
+                columns=['date', 'visitor', 'home', 'team', 'fg', 'fga', 'fg_perc', '3p', '3pa', '3p_perc',
                          'ft', 'fta', 'ft_perc', 'orb', 'drb', 'trb', 'ast', 'stl', 'blk', 'tov', 'pf', 'pts'])
 
-    seasons = list(range(2006, 2021))
+    seasons = [2019]
     months = ["october", "november", "december", "january", "february", "march", "april", "may", "june"]
     holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
-    covid_months = [["october-2019", "november", "december", "january", "february",
-                     "march", "july", "august", "september", "october-2020"],
+    covid_months = [['august'],
                     ["december", "january", "february", "march", "april", "may", "june", "july"]]
     for season in seasons:
         if season == 2011:
