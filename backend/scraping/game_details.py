@@ -78,7 +78,7 @@ def scrape_game(link, meta_data):
                            'ast': 0, 'stl': 0, 'blk': 0, 'tov': 0, 'pf': 0, 'pts': 0, 'plus_minus': 0}
                 elif detail_filename != 'advanced_details':
                     row = {'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
-                           'team': team, 'starter': starter, 'player': player_data[0], 'mp': player_data[1],
+                           'team': int(team), 'starter': starter, 'player': player_data[0], 'mp': player_data[1],
                            'fg': player_data[2], 'fga': player_data[3], 'fg_perc': player_data[4],
                            '3p': player_data[5], '3pa': player_data[6], '3p_perc': player_data[7],
                            'ft': player_data[8], 'fta': player_data[9], 'ft_perc': player_data[10],
@@ -264,8 +264,8 @@ def main():
                 columns=['date', 'visitor', 'home', 'team', 'fg', 'fga', 'fg_perc', '3p', '3pa', '3p_perc',
                          'ft', 'fta', 'ft_perc', 'orb', 'drb', 'trb', 'ast', 'stl', 'blk', 'tov', 'pf', 'pts'])
 
-    seasons = [2019]
-    months = ["october", "november", "december", "january", "february", "march", "april", "may", "june"]
+    seasons = [2006]
+    months = ["october"]
     holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
     covid_months = [['august'],
                     ["december", "january", "february", "march", "april", "may", "june", "july"]]
@@ -282,7 +282,10 @@ def main():
         season_df = scrape_season(season, season_months)
         for key in df:
             df[key] = df[key].append(season_df[key], ignore_index=True)
-            df[key].to_csv('backend/data/' + key + '.csv')
+            if key.split('_')[1] == 'totals':
+                df[key].to_csv('backend/data/totals/' + key + '.csv')
+            else:
+                df[key].to_csv('backend/data/details/' + key + '.csv')
 
 
 if __name__ == '__main__':
