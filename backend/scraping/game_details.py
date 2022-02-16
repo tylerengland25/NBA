@@ -227,6 +227,7 @@ def scrape_season(season, months):
         for key in season_df:
             season_df[key] = season_df[key].append(month_df[key], ignore_index=True)
 
+    season_df['season'] = season
     return season_df
 
 
@@ -264,10 +265,11 @@ def main():
                 columns=['date', 'visitor', 'home', 'team', 'fg', 'fga', 'fg_perc', '3p', '3pa', '3p_perc',
                          'ft', 'fta', 'ft_perc', 'orb', 'drb', 'trb', 'ast', 'stl', 'blk', 'tov', 'pf', 'pts'])
 
-    seasons = [2006]
-    months = ["october"]
+    seasons = list(range(2006, 2021))
+    months = ["october", "november", "december", "january", "february", "march", "april", "may", "june"]
     holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
-    covid_months = [['august'],
+    covid_months = [["october-2019", "november", "december", "january", "february",
+                     "march", "july", "august", "september", "october-2020"],
                     ["december", "january", "february", "march", "april", "may", "june", "july"]]
     for season in seasons:
         if season == 2011:
