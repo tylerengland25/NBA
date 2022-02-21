@@ -265,7 +265,7 @@ def main():
                 columns=['date', 'visitor', 'home', 'team', 'fg', 'fga', 'fg_perc', '3p', '3pa', '3p_perc',
                          'ft', 'fta', 'ft_perc', 'orb', 'drb', 'trb', 'ast', 'stl', 'blk', 'tov', 'pf', 'pts'])
 
-    seasons = list(range(2006, 2021))
+    seasons = list(range(2014, 2021))
     months = ["october", "november", "december", "january", "february", "march", "april", "may", "june"]
     holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
     covid_months = [["october-2019", "november", "december", "january", "february",
@@ -283,6 +283,11 @@ def main():
 
         season_df = scrape_season(season, season_months)
         for key in df:
+            if key.split('_')[1] == 'totals':
+                df[key] = pd.read_csv('backend/data/totals/' + key + '.csv')
+            else:
+                df[key] = pd.read_csv('backend/data/details/' + key + '.csv')
+
             df[key] = df[key].append(season_df[key], ignore_index=True)
             if key.split('_')[1] == 'totals':
                 df[key].to_csv('backend/data/totals/' + key + '.csv')
