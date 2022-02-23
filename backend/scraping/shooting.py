@@ -3,7 +3,7 @@ from urllib.request import urlopen
 import pandas as pd
 
 
-def scrape_game(link):
+def scrape_game(link, game_data):
     # Connect to website
     link = link.split('/')
     link.insert(2, 'shot-chart')
@@ -11,19 +11,20 @@ def scrape_game(link):
     html = urlopen(url)
     soup = BeautifulSoup(html, features="lxml")
 
+    # Game dataframe
+    stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
+             'ast', 'ast_perc']
+    cols = ['date', 'visitor', 'home'] + stats
+    game_df = pd.DataFrame(columns=cols)
+
     # Find shooting table and return quarter shooting stats for both teams
-    shooting_data = {}
     tables = soup.find_all('table')
-    home_visitor = 0
+    team = 0
     for table in tables:
-        home_visitor += 1
         rows = table.find_all('tr')
         for row in rows[1:]:
             data = row.find_all(['th', 'td'])
             data = [td.text for td in data]
-
-            # Which team
-            team = 'visitor' if home_visitor == 1 else 'home'
 
             # Which quarter
             if data[0] == '1st':
@@ -34,20 +35,27 @@ def scrape_game(link):
                 quarter = 'q3'
             elif data[0] == '4th':
                 quarter = 'q4'
+            elif data[0] == 'OT':
+                quarter = 'ot1'
+            elif data[0] == '2OT':
+                quarter = 'ot2'
+            elif data[0] == '3OT':
+                quarter = 'ot3'
+            elif data[0] == '4OT':
+                quarter = 'ot4'
             else:
                 quarter = 'total'
 
-            shooting_data.update(
-                {'fg_{}_{}'.format(team, quarter): data[1], 'fga_{}_{}'.format(team, quarter): data[2],
-                 'fg_perc_{}_{}'.format(team, quarter): data[3], '2p_{}_{}'.format(team, quarter): data[4],
-                 '2pa_{}_{}'.format(team, quarter): data[5], '2p_perc_{}_{}'.format(team, quarter): data[6],
-                 '3p_{}_{}'.format(team, quarter): data[7], '3pa_{}_{}'.format(team, quarter): data[8],
-                 '3p_perc_{}_{}'.format(team, quarter): data[9], 'efg_perc_{}_{}'.format(team, quarter): data[10],
-                 'ast_{}_{}'.format(team, quarter): data[11], 'ast_perc_{}_{}'.format(team, quarter): data[12]
-                 }
-            )
+            game_df = game_df.append(
+                {'date': game_data['date'], 'visitor': game_data['visitor'], 'home': game_data['home'],
+                 'team': team, 'quarter': quarter, 'fg': data[1], 'fga': data[2], 'fg_perc': data[3], '2p': data[4],
+                 '2pa': data[5], '2p_perc': data[6], '3p': data[7], '3pa': data[8], '3p_perc': data[9],
+                 'efg_perc': data[10], 'ast': data[11], 'ast_perc': data[12]},
+                ignore_index=True)
 
-    return shooting_data
+        team = 1
+
+    return game_df
 
 
 def scrape_month(season, month):
@@ -58,11 +66,9 @@ def scrape_month(season, month):
     soup = BeautifulSoup(html, features="lxml")
 
     # Month datframe
-    stats = ['fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc', 'ast', 'ast_perc']
-    quarters = ['q1', 'q2', 'q3', 'q4', 'total']
-    teams = ['visitor', 'home']
-    quarter_stats = [stat + '_' + team + '_' + quarter for quarter in quarters for stat in stats for team in teams]
-    cols = ['date', 'visitor', 'home'] + quarter_stats
+    stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
+             'ast', 'ast_perc']
+    cols = ['date', 'visitor', 'home'] + stats
     month_df = pd.DataFrame(columns=cols)
 
     # Find games and iterate to find shooting data
@@ -73,8 +79,7 @@ def scrape_month(season, month):
             print("\t\t" + str(row_data[0].text) + ", " + row_data[2].text + " @ " + row_data[4].text)
             game_data = {'date': row_data[0].text, 'visitor': row_data[2].text, 'home': row_data[4].text}
             link = row_data[6].a["href"]
-            game_data.update(scrape_game(link))
-            month_df = month_df.append(game_data, ignore_index=True)
+            month_df = month_df.append(scrape_game(link, game_data), ignore_index=True)
 
     return month_df
 
@@ -82,11 +87,9 @@ def scrape_month(season, month):
 def scrape_season(season, months):
     print(season)
     # Season dataframe
-    stats = ['fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc', 'ast', 'ast_perc']
-    quarters = ['q1', 'q2', 'q3', 'q4', 'total']
-    teams = ['visitor', 'home']
-    quarter_stats = [stat + '_' + team + '_' + quarter for quarter in quarters for stat in stats for team in teams]
-    cols = ['date', 'visitor', 'home'] + quarter_stats
+    stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
+             'ast', 'ast_perc']
+    cols = ['date', 'visitor', 'home'] + stats
     season_df = pd.DataFrame(columns=cols)
 
     # Scrape months in season
@@ -98,11 +101,9 @@ def scrape_season(season, months):
 
 def main():
     # Create main shooting dataframe
-    stats = ['fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc', 'ast', 'ast_perc']
-    quarters = ['q1', 'q2', 'q3', 'q4', 'total']
-    teams = ['visitor', 'home']
-    quarter_stats = [stat + '_' + team + '_' + quarter for quarter in quarters for stat in stats for team in teams]
-    cols = ['date', 'visitor', 'home'] + quarter_stats
+    stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
+             'ast', 'ast_perc']
+    cols = ['date', 'visitor', 'home'] + stats
     df = pd.DataFrame(columns=cols)
 
     # Scrape seasons
