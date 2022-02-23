@@ -1,7 +1,8 @@
 import pandas as pd
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
+from itertools import product
 
 
 def load_data():
@@ -47,7 +48,7 @@ def load_data():
     return df.drop(['date', 'visitor', 'home'], axis=1)
 
 
-def decision_tree_model():
+def random_forest_model():
     # Load data
     data = load_data()
 
@@ -59,7 +60,13 @@ def decision_tree_model():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Train model
-    model = DecisionTreeRegressor(random_state=0, max_depth=5, max_features=15)
+    model = RandomForestRegressor(
+        random_state=0,
+        n_estimators=20, max_depth=3,
+        max_features=15, max_samples=2000,
+        min_samples_split=500
+    )
+
     model.fit(X_train, y_train)
 
     # Evaluate model
@@ -84,4 +91,4 @@ def evaluate_model(X_test, y_test, model):
 
 
 if __name__ == '__main__':
-    tree_model = decision_tree_model()
+    random_forest_model()

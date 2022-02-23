@@ -1,7 +1,10 @@
 import pandas as pd
-from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
 
 def load_data():
@@ -47,7 +50,7 @@ def load_data():
     return df.drop(['date', 'visitor', 'home'], axis=1)
 
 
-def decision_tree_model():
+def polynomial_model():
     # Load data
     data = load_data()
 
@@ -55,11 +58,18 @@ def decision_tree_model():
     y = data.iloc[:, 0]
     X = data.iloc[:, 1:]
 
+    # Standardize X
+    X = StandardScaler().fit_transform(X)
+
     # Split data into testing and training sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Train model
-    model = DecisionTreeRegressor(random_state=0, max_depth=5, max_features=15)
+    polynomial_features = PolynomialFeatures(degree=3)
+    regressor = LinearRegression()
+
+    model = Pipeline(steps=[('ployFeature', polynomial_features), ('regressor', regressor)])
+
     model.fit(X_train, y_train)
 
     # Evaluate model
@@ -84,4 +94,7 @@ def evaluate_model(X_test, y_test, model):
 
 
 if __name__ == '__main__':
-    tree_model = decision_tree_model()
+    model = polynomial_model()
+
+
+
