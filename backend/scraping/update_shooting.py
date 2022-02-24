@@ -94,11 +94,13 @@ def scrape_month(season, month, latest_date, current_date):
                 month_df = month_df.append(scrape_game(link, game_data), ignore_index=True)
             elif game_date == current_date:
                 month_df = month_df.append(
-                    {'date': game_data['date'], 'visitor': game_data['visitor'], 'home': game_data['home'], 'team': 1},
+                    {'date': game_data['date'], 'visitor': game_data['visitor'],
+                     'home': game_data['home'], 'team': 1, 'quarter': 'total'},
                     ignore_index=True
                 )
                 month_df = month_df.append(
-                    {'date': game_data['date'], 'visitor': game_data['visitor'], 'home': game_data['home'], 'team': 0},
+                    {'date': game_data['date'], 'visitor': game_data['visitor'],
+                     'home': game_data['home'], 'team': 0, 'quarter': 'total'},
                     ignore_index=True
                 )
             elif game_date > current_date:
@@ -136,7 +138,7 @@ def main():
 
     latest_date = date(latest_date['year'], latest_date['month'], latest_date['day'])
 
-    current_date = date(2021, 10, 20)
+    current_date = date.today()
 
     season = 2021
     months = ["october", "november", "december", "january", "february", "march", "april"]

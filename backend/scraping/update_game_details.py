@@ -195,13 +195,25 @@ def scrape_month(season, month, latest_date, current_date):
                 for key in month_df:
                     month_df[key] = month_df[key].append(
                         {'date': game_data['date'], 'visitor': game_data['visitor'],
-                         'home': game_data['home'], 'team': 1
+                         'home': game_data['home'], 'team': 1, 'starter': 1
                          },
                         ignore_index=True
                     )
                     month_df[key] = month_df[key].append(
                         {'date': game_data['date'], 'visitor': game_data['visitor'],
-                         'home': game_data['home'], 'team': 0
+                         'home': game_data['home'], 'team': 1, 'starter': 0
+                         },
+                        ignore_index=True
+                    )
+                    month_df[key] = month_df[key].append(
+                        {'date': game_data['date'], 'visitor': game_data['visitor'],
+                         'home': game_data['home'], 'team': 0, 'starter': 1
+                         },
+                        ignore_index=True
+                    )
+                    month_df[key] = month_df[key].append(
+                        {'date': game_data['date'], 'visitor': game_data['visitor'],
+                         'home': game_data['home'], 'team': 0, 'starter': 0
                          },
                         ignore_index=True
                     )
