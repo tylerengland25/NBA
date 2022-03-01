@@ -135,7 +135,7 @@ def preprocess():
     stats = corr_df[corr_df['corr'].abs() >= .4]['stat']
     df = last_15_games_unweighted[stats]
 
-    df.to_csv('backend/data/inputs/game_totals.csv')
+    df.to_csv('backend/data/inputs/3p/game_totals.csv')
 
 
 if __name__ == '__main__':

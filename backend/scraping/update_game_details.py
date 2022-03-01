@@ -277,10 +277,10 @@ def main():
     for key in game_details_label:
         if game_details_label[key] is None:
             df['advanced_details'] = \
-                pd.read_csv('backend/data/details/advanced_details.csv').drop(['Unnamed: 0'], axis=1)
+                pd.read_csv('../../backend/data/details/advanced_details.csv').drop(['Unnamed: 0'], axis=1)
         else:
             df['game_details' + game_details_label[key]] = \
-                pd.read_csv(f'backend/data/details/game_details{game_details_label[key]}.csv').drop(
+                pd.read_csv(f'../../backend/data/details/game_details{game_details_label[key]}.csv').drop(
                     ['Unnamed: 0'], axis=1
                 )
 
@@ -291,10 +291,10 @@ def main():
     for key in game_totals_label:
         if game_totals_label[key] is None:
             df['advanced_totals'] = \
-                pd.read_csv('backend/data/totals/advanced_totals.csv').drop(['Unnamed: 0'], axis=1)
+                pd.read_csv('../../backend/data/totals/advanced_totals.csv').drop(['Unnamed: 0'], axis=1)
         else:
             df[game_totals_label[key] + '_totals'] = \
-                pd.read_csv(f'backend/data/totals/{game_totals_label[key]}_totals.csv').drop(['Unnamed: 0'], axis=1)
+                pd.read_csv(f'../../backend/data/totals/{game_totals_label[key]}_totals.csv').drop(['Unnamed: 0'], axis=1)
 
     dates = pd.to_datetime(df['game_details']['date'])
 
@@ -318,10 +318,10 @@ def main():
 
         if key.split('_')[1] == 'totals':
             df[key] = df[key].drop_duplicates(['date', 'visitor', 'home', 'team'], keep='last')
-            df[key].to_csv('backend/data/totals/' + key + '.csv')
+            df[key].to_csv('../../backend/data/totals/' + key + '.csv')
         else:
             df[key] = df[key].drop_duplicates(['date', 'visitor', 'home', 'team', 'starter', 'player'], keep='last')
-            df[key].to_csv('backend/data/details/' + key + '.csv')
+            df[key].to_csv('../../backend/data/details/' + key + '.csv')
 
 
 if __name__ == '__main__':

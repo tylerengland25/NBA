@@ -308,7 +308,7 @@ def preprocess():
 
     df = df.drop(['target_bench', 'target_starters'], axis=1)
 
-    df.to_csv('backend/data/inputs/game_details.csv')
+    df.to_csv('backend/data/inputs/3p/game_details.csv')
 
 
 if __name__ == '__main__':

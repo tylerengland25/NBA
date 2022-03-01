@@ -141,7 +141,7 @@ def scrape_season(season, months, latest_date, current_date):
 
 
 def main():
-    df = pd.read_csv('backend/data/scoring.csv').drop(['Unnamed: 0'], axis=1)
+    df = pd.read_csv('../../backend/data/scoring.csv').drop(['Unnamed: 0'], axis=1)
 
     dates = pd.to_datetime(df['date'])
 
@@ -162,7 +162,7 @@ def main():
     df = df.append(scrape_season(season, months, latest_date, current_date), ignore_index=True)
     df = df.drop_duplicates(['date', 'visitor', 'home', 'team'], keep='last')
 
-    df.to_csv('backend/data/scoring.csv')
+    df.to_csv('../../backend/data/scoring.csv')
 
 
 if __name__ == '__main__':

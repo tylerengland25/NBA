@@ -10,11 +10,11 @@ from datetime import date
 
 def load_data():
     # Paths
-    shooting_path = 'backend/data/inputs/3p/shooting.csv'
-    game_totals_path = 'backend/data/inputs/3p/game_totals.csv'
-    advanced_totals_path = 'backend/data/inputs/3p/advanced_totals.csv'
-    game_details_path = 'backend/data/inputs/3p/game_details.csv'
-    advanced_details_path = 'backend/data/inputs/3p/advanced_details.csv'
+    shooting_path = '../backend/data/inputs/3p/shooting.csv'
+    game_totals_path = '../backend/data/inputs/3p/game_totals.csv'
+    advanced_totals_path = '../backend/data/inputs/3p/advanced_totals.csv'
+    game_details_path = '../backend/data/inputs/3p/game_details.csv'
+    advanced_details_path = '../backend/data/inputs/3p/advanced_details.csv'
 
     # Read files
     shooting_df = pd.read_csv(shooting_path)

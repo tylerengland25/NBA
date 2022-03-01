@@ -32,7 +32,7 @@ def main():
     df.loc[:, 'neural_network'] = [round(x) for x in neural_network]
     df.loc[:, 'random_forest'] = [round(x) for x in random_forest]
 
-    predictions = pd.read_csv('backend/predictions/3p_predictions.csv').drop(['Unnamed: 0'], axis=1)
+    predictions = pd.read_csv('../backend/predictions/3p_predictions.csv').drop(['Unnamed: 0'], axis=1)
     predictions['date'] = predictions['date'].apply(
         lambda x: date(int(x.split('-')[0]), int(x.split('-')[1]), int(x.split('-')[2]))
     )
@@ -42,7 +42,7 @@ def main():
         (predictions['linear'] + predictions['decision_tree'] + predictions['gradient_boosted'] +
          predictions['neural_network'] + predictions['random_forest']) / 5
 
-    predictions.to_csv('backend/predictions/3p_predictions.csv')
+    predictions.to_csv('../backend/predictions/3p_predictions.csv')
 
 
 if __name__ == '__main__':
