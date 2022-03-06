@@ -2,3 +2,4 @@
 scrape_preprocess_model.sh
 backend/predictions/3p_predictions.csv
 backend/predictions/3p_predictions.csv
+*.csv
