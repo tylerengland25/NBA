@@ -29,7 +29,7 @@ def load_data():
                   right_on=['date', 'visitor', 'home'],
                   how='left')
 
-    return df
+    return df.fillna(0)
 
 
 def decision_tree_model():

@@ -159,4 +159,120 @@
 157,3/16/2022,Phoenix Suns,Houston Rockets,26,26,26,25,26,24.5,25.8,-140,100
 158,3/16/2022,Portland Trail Blazers,New York Knicks,26,25,26,25,25,26.5,25.4,130,-170
 159,3/16/2022,Toronto Raptors,Los Angeles Clippers,23,24,23,22,22,24.5,22.8,-115,-125
-161,3/17/2022,Detroit Pistons,Orlando Magic,24,23,24,24,25,24.5,24,130,-170
+160,3/17/2022,Detroit Pistons,Orlando Magic,24,23,24,24,25,24.5,24,130,-170
+161,3/18/2022,Boston Celtics,Sacramento Kings,24,25,24,26,25,24.5,24.8,-110,-130
+162,3/18/2022,Chicago Bulls,Phoenix Suns,22,22,22,23,21,21.5,22,-150,110
+163,3/18/2022,Dallas Mavericks,Philadelphia 76ers,24,28,26,26,26,24.5,26,-105,-135
+164,3/18/2022,Denver Nuggets,Cleveland Cavaliers,22,22,23,23,23,24.5,22.6,-115,-125
+165,3/18/2022,Indiana Pacers,Houston Rockets,26,26,25,27,26,24.5,26,-140,100
+166,3/18/2022,Los Angeles Clippers,Utah Jazz,26,28,27,27,26,27.5,26.8,100,-140
+167,3/18/2022,Los Angeles Lakers,Toronto Raptors,24,24,23,24,23,24.5,23.6,-110,-130
+168,3/18/2022,Memphis Grizzlies,Atlanta Hawks,24,25,23,24,24,,24,,
+169,3/18/2022,New Orleans Pelicans,San Antonio Spurs,24,24,24,25,22,21.5,23.8,-130,-110
+170,3/18/2022,Oklahoma City Thunder,Miami Heat,25,26,26,27,25,,25.8,,
+171,3/18/2022,Portland Trail Blazers,Brooklyn Nets,24,24,24,25,23,24.5,24,-115,-125
+172,3/18/2022,Washington Wizards,New York Knicks,23,22,23,24,23,24.5,23,120,-160
+173,3/19/2022,Dallas Mavericks,Charlotte Hornets,26,29,27,27,26,26.5,27,-125,-115
+174,3/19/2022,Detroit Pistons,Cleveland Cavaliers,23,21,23,23,22,21.5,22.4,-160,120
+175,3/19/2022,Los Angeles Lakers,Washington Wizards,24,25,26,25,25,21.5,25,-150,110
+176,3/19/2022,Milwaukee Bucks,Minnesota Timberwolves,28,29,30,29,26,29.5,28.4,-115,-125
+177,3/20/2022,Boston Celtics,Denver Nuggets,25,26,25,26,25,24.5,25.4,-150,110
+178,3/20/2022,Memphis Grizzlies,Houston Rockets,23,25,24,24,25,24.5,24.2,-110,-130
+179,3/20/2022,New Orleans Pelicans,Atlanta Hawks,24,22,24,25,24,24.5,23.8,120,-160
+180,3/20/2022,Oklahoma City Thunder,Orlando Magic,26,29,27,28,25,24.5,27,105,-145
+181,3/20/2022,Phoenix Suns,Sacramento Kings,23,24,24,24,23,24.5,23.6,100,-140
+182,3/20/2022,Portland Trail Blazers,Indiana Pacers,25,26,25,27,25,24.5,25.6,-140,100
+183,3/20/2022,San Antonio Spurs,Golden State Warriors,26,26,26,27,25,26.5,26,110,-150
+184,3/20/2022,Toronto Raptors,Philadelphia 76ers,23,24,24,25,23,24.5,23.8,115,-160
+185,3/20/2022,Utah Jazz,New York Knicks,27,26,27,29,26,27.5,27,-125,-115
+186,3/21/2022,Boston Celtics,Oklahoma City Thunder,27,28,28,29,26,24.5,27.6,-115,-115
+187,3/21/2022,Los Angeles Lakers,Cleveland Cavaliers,23,25,24,24,25,24.5,24.2,105,-145
+188,3/21/2022,Miami Heat,Philadelphia 76ers,24,25,25,26,26,24.5,25.2,-125,-115
+189,3/21/2022,Minnesota Timberwolves,Dallas Mavericks,27,29,28,29,26,27.5,27.8,-125,-115
+190,3/21/2022,New Orleans Pelicans,Charlotte Hornets,25,26,26,27,25,24.5,25.8,-125,-115
+191,3/21/2022,Portland Trail Blazers,Detroit Pistons,23,23,23,24,24,24.5,23.4,105,-145
+192,3/21/2022,Toronto Raptors,Chicago Bulls,20,21,21,21,20,21.5,20.6,-160,120
+193,3/21/2022,Utah Jazz,Brooklyn Nets,26,26,26,27,26,26.5,26.2,-110,-130
+194,3/21/2022,Washington Wizards,Houston Rockets,24,25,25,25,25,24.5,24.8,105,-145
+195,3/22/2022,Atlanta Hawks,New York Knicks,24,24,24,24,25,24.5,24.2,-145,105
+196,3/22/2022,Chicago Bulls,Milwaukee Bucks,24,23,24,24,24,24.5,23.8,-140,100
+197,3/22/2022,Golden State Warriors,Orlando Magic,26,26,27,27,26,26.5,26.4,-115,-125
+198,3/22/2022,Los Angeles Clippers,Denver Nuggets,24,25,24,24,25,24.5,24.4,-140,100
+199,3/23/2022,Atlanta Hawks,Detroit Pistons,23,23,23,24,25,,23.6,,
+200,3/23/2022,Brooklyn Nets,Memphis Grizzlies,23,24,22,23,23,21.5,23,-145,105
+201,3/23/2022,Golden State Warriors,Miami Heat,25,26,27,28,26,27.5,26.4,-125,-115
+202,3/23/2022,Houston Rockets,Dallas Mavericks,27,26,26,29,26,26.5,26.8,-110,-130
+203,3/23/2022,New York Knicks,Charlotte Hornets,26,28,26,28,26,26.5,26.8,-125,-115
+204,3/23/2022,Orlando Magic,Oklahoma City Thunder,26,28,27,28,26,,27,,
+205,3/23/2022,Philadelphia 76ers,Los Angeles Lakers,24,24,25,26,25,24.5,24.8,110,-150
+206,3/23/2022,Phoenix Suns,Minnesota Timberwolves,26,26,28,28,26,26.5,26.8,-115,-125
+207,3/23/2022,Sacramento Kings,Indiana Pacers,24,25,24,26,25,24.5,24.8,110,-150
+208,3/23/2022,San Antonio Spurs,Portland Trail Blazers,24,25,24,25,23,24.5,24.2,-110,-130
+209,3/23/2022,Utah Jazz,Boston Celtics,28,28,29,30,26,27.5,28.2,-125,-115
+210,3/24/2022,Chicago Bulls,New Orleans Pelicans,21,21,21,21,21,21.5,21,-125,-115
+211,3/24/2022,Cleveland Cavaliers,Toronto Raptors,22,22,22,23,21,24.5,22,120,-160
+212,3/24/2022,Indiana Pacers,Memphis Grizzlies,24,23,23,24,23,24.5,23.4,-120,-130
+213,3/24/2022,Phoenix Suns,Denver Nuggets,24,25,25,25,25,24.5,24.8,-115,-125
+214,3/24/2022,Washington Wizards,Milwaukee Bucks,25,25,26,26,25,24.5,25.4,-120,-115
+215,3/25/2022,Dallas Mavericks,Minnesota Timberwolves,27,29,28,29,25,27.5,27.6,-115,-125
+216,3/25/2022,Golden State Warriors,Atlanta Hawks,25,26,26,25,25,27.5,25.4,-105,-135
+217,3/25/2022,Houston Rockets,Portland Trail Blazers,24,26,25,25,25,26.5,25,-105,-135
+218,3/25/2022,New York Knicks,Miami Heat,26,25,27,27,25,,26,,
+219,3/25/2022,Philadelphia 76ers,Los Angeles Clippers,23,23,23,24,24,24.5,23.4,110,-150
+220,3/25/2022,Utah Jazz,Charlotte Hornets,28,24,29,29,25,29.5,27,110,-150
+221,3/25/2022,Washington Wizards,Detroit Pistons,23,23,23,23,22,21.5,22.8,-125,-115
+222,3/26/2022,Brooklyn Nets,Miami Heat,24,24,24,26,24,24.5,24.4,-120,-115
+223,3/26/2022,Chicago Bulls,Cleveland Cavaliers,21,22,21,22,21,21.5,21.4,-145,105
+224,3/26/2022,Houston Rockets,Portland Trail Blazers,24,26,24,26,25,26.5,25,-105,-135
+225,3/26/2022,Indiana Pacers,Toronto Raptors,24,24,24,25,23,24.5,24,100,-140
+226,3/26/2022,Milwaukee Bucks,Memphis Grizzlies,26,26,26,29,25,26.5,26.4,105,-145
+227,3/26/2022,Oklahoma City Thunder,Denver Nuggets,26,28,27,29,26,24.5,27.2,-125,-115
+228,3/26/2022,Sacramento Kings,Orlando Magic,25,26,26,27,25,24.5,25.8,110,-150
+229,3/26/2022,San Antonio Spurs,New Orleans Pelicans,24,24,24,26,23,21.5,24.2,-135,-105
+230,3/27/2022,Charlotte Hornets,Brooklyn Nets,25,25,26,24,25,24.5,25,-140,100
+231,3/27/2022,Golden State Warriors,Washington Wizards,25,25,26,23,26,24.5,25,110,-150
+232,3/27/2022,Los Angeles Lakers,New Orleans Pelicans,23,25,24,22,24,21.5,23.6,-165,122
+233,3/27/2022,Minnesota Timberwolves,Boston Celtics,27,29,28,26,26,26.5,27.2,-150,110
+234,3/27/2022,New York Knicks,Detroit Pistons,24,23,24,23,25,24.5,23.8,-105,-130
+235,3/27/2022,Philadelphia 76ers,Phoenix Suns,24,25,25,23,24,21.5,24.2,-165,120
+236,3/27/2022,Utah Jazz,Dallas Mavericks,27,28,27,26,26,27.5,26.8,-110,-125
+237,3/28/2022,Atlanta Hawks,Indiana Pacers,25,27,26,24,26,24.5,25.6,-115,-115
+238,3/28/2022,Boston Celtics,Toronto Raptors,24,24,25,24,25,24.5,24.4,-125,-110
+239,3/28/2022,Chicago Bulls,New York Knicks,22,22,22,22,22,24.5,22,100,-140
+240,3/28/2022,Denver Nuggets,Charlotte Hornets,25,27,26,25,26,26.5,25.8,-120,-115
+241,3/28/2022,Golden State Warriors,Memphis Grizzlies,25,24,25,24,26,26.5,24.8,105,-140
+242,3/28/2022,Oklahoma City Thunder,Portland Trail Blazers,25,25,27,27,25,24.5,25.8,-120,-115
+243,3/28/2022,Orlando Magic,Cleveland Cavaliers,23,25,24,23,25,24.5,24,110,-150
+244,3/28/2022,Sacramento Kings,Miami Heat,24,25,25,25,25,24.5,24.8,-125,-105
+245,3/28/2022,San Antonio Spurs,Houston Rockets,25,24,24,23,26,24.5,24.4,-115,-115
+246,3/29/2022,Chicago Bulls,Washington Wizards,21,21,20,20,21,21.5,20.6,-110,-130
+247,3/29/2022,Detroit Pistons,Brooklyn Nets,23,23,23,22,22,21.5,22.6,-140,100
+248,3/29/2022,Los Angeles Lakers,Dallas Mavericks,25,26,26,25,26,24.5,25.6,-125,-115
+249,3/29/2022,Milwaukee Bucks,Philadelphia 76ers,25,25,25,25,26,26.5,25.2,105,-145
+250,3/29/2022,Utah Jazz,Los Angeles Clippers,26,26,26,26,26,26.5,26,-130,-105
+251,3/30/2022,Atlanta Hawks,Oklahoma City Thunder,27,26,29,26,26,24.5,26.8,-125,-115
+252,3/30/2022,Charlotte Hornets,New York Knicks,26,26,27,26,26,27.5,26.2,-105,-135
+253,3/30/2022,Dallas Mavericks,Cleveland Cavaliers,25,26,25,23,25,24.5,24.8,-110,-130
+254,3/30/2022,Denver Nuggets,Indiana Pacers,25,26,25,24,25,24.5,25,-150,110
+255,3/30/2022,Memphis Grizzlies,San Antonio Spurs,23,23,23,22,24,21.5,23,-180,140
+256,3/30/2022,Miami Heat,Boston Celtics,26,26,26,25,26,26.5,25.8,-110,-130
+257,3/30/2022,Minnesota Timberwolves,Toronto Raptors,25,26,26,25,26,26.5,25.6,-125,-115
+258,3/30/2022,New Orleans Pelicans,Portland Trail Blazers,23,21,24,24,22,24.5,22.8,110,-150
+259,3/30/2022,Orlando Magic,Washington Wizards,23,23,24,23,25,21.5,23.6,-150,110
+260,3/30/2022,Phoenix Suns,Golden State Warriors,24,26,26,24,26,26.5,25.2,115,-155
+261,3/30/2022,Sacramento Kings,Houston Rockets,26,26,26,24,26,24.5,25.6,-160,120
+262,3/31/2022,Cleveland Cavaliers,Atlanta Hawks,23,22,23,25,24,24.5,23.4,-110,-130
+263,3/31/2022,Los Angeles Clippers,Chicago Bulls,20,21,21,22,21,21.5,21,-170,130
+264,3/31/2022,Los Angeles Lakers,Utah Jazz,26,29,27,29,26,26.5,27.4,-130,-110
+265,3/31/2022,Milwaukee Bucks,Brooklyn Nets,26,27,25,28,24,26.5,26,100,-140
+266,3/31/2022,Philadelphia 76ers,Detroit Pistons,23,25,24,25,24,21.5,24.2,-130,110
+267,4/1/2022,Dallas Mavericks,Washington Wizards,25,24,24,24,25,24.5,24.4,120,-160
+268,4/1/2022,Detroit Pistons,Oklahoma City Thunder,26,28,27,25,26,24.5,26.4,125,-165
+269,4/1/2022,Indiana Pacers,Boston Celtics,26,26,27,25,26,24.5,26,-150,110
+270,4/1/2022,Los Angeles Clippers,Milwaukee Bucks,26,25,26,25,26,,25.6,,
+271,4/1/2022,Minnesota Timberwolves,Denver Nuggets,26,26,27,26,26,27.5,26.2,-110,-130
+272,4/1/2022,New Orleans Pelicans,Los Angeles Lakers,23,25,24,23,23,21.5,23.6,-165,125
+273,4/1/2022,Phoenix Suns,Memphis Grizzlies,24,23,24,22,24,21.5,23.4,-170,130
+274,4/1/2022,Portland Trail Blazers,San Antonio Spurs,24,25,24,23,22,24.5,23.6,-105,-135
+275,4/1/2022,Sacramento Kings,Houston Rockets,25,25,25,24,25,24.5,24.8,-130,-110
+276,4/1/2022,Toronto Raptors,Orlando Magic,24,25,24,23,24,24.5,24,-105,-135
