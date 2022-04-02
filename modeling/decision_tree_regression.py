@@ -9,26 +9,16 @@ def load_data():
     # Paths
     shooting_path = '../backend/data/inputs/3p/shooting.csv'
     game_totals_path = '../backend/data/inputs/3p/game_totals.csv'
-    advanced_totals_path = '../backend/data/inputs/3p/advanced_totals.csv'
     game_details_path = '../backend/data/inputs/3p/game_details.csv'
-    advanced_details_path = '../backend/data/inputs/3p/advanced_details.csv'
 
     # Read files
     shooting_df = pd.read_csv(shooting_path)
     game_totals_df = pd.read_csv(game_totals_path)
-    advanced_totals_df = pd.read_csv(advanced_totals_path)
     game_details_df = pd.read_csv(game_details_path)
-    advanced_details_df = pd.read_csv(advanced_details_path)
 
     # Merge files
     cols_to_use = list(game_totals_df.columns.difference(shooting_df.columns)) + ['date', 'visitor', 'home']
     df = pd.merge(shooting_df, game_totals_df[cols_to_use],
-                  left_on=['date', 'visitor', 'home'],
-                  right_on=['date', 'visitor', 'home'],
-                  how='left')
-
-    cols_to_use = list(advanced_totals_df.columns.difference(df.columns)) + ['date', 'visitor', 'home']
-    df = pd.merge(df, advanced_totals_df[cols_to_use],
                   left_on=['date', 'visitor', 'home'],
                   right_on=['date', 'visitor', 'home'],
                   how='left')
@@ -39,13 +29,7 @@ def load_data():
                   right_on=['date', 'visitor', 'home'],
                   how='left')
 
-    cols_to_use = list(advanced_details_df.columns.difference(df.columns)) + ['date', 'visitor', 'home']
-    df = pd.merge(df, advanced_details_df[cols_to_use],
-                  left_on=['date', 'visitor', 'home'],
-                  right_on=['date', 'visitor', 'home'],
-                  how='left')
-
-    return df
+    return df.fillna(0)
 
 
 def decision_tree_model():

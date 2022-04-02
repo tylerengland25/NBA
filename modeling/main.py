@@ -34,7 +34,7 @@ def main():
 
     predictions = pd.read_csv('../backend/predictions/3p_predictions.csv').drop(['Unnamed: 0'], axis=1)
     predictions['date'] = predictions['date'].apply(
-        lambda x: date(int(x.split('-')[0]), int(x.split('-')[1]), int(x.split('-')[2]))
+        lambda x: date(int(x.split('/')[2]), int(x.split('/')[0]), int(x.split('/')[1]))
     )
     predictions = predictions.append(df, ignore_index=True)
     predictions = predictions.drop_duplicates(['date', 'visitor', 'home'], keep='last')
