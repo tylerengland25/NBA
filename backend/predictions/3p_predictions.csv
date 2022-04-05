@@ -293,15 +293,15 @@
 291,4/3/2022,Phoenix Suns,Oklahoma City Thunder,26,31,28,28,26,24.5,27.8,105,-145
 292,4/3/2022,Portland Trail Blazers,San Antonio Spurs,25,26,25,27,24,24.5,25.4,-105,-130
 293,4/3/2022,Washington Wizards,Boston Celtics,24,26,25,25,25,24.5,25,100,-140
-294,4/5/2022 0:00,Atlanta Hawks,Toronto Raptors,25,24,25,24,26,22.5,24.8,,
-295,4/5/2022 0:00,Charlotte Hornets,Miami Heat,26,28,27,27,26,,26.8,,
-296,4/5/2022 0:00,Cleveland Cavaliers,Orlando Magic,24,25,25,24,24,,24.4,,
-297,4/5/2022 0:00,Houston Rockets,Brooklyn Nets,26,25,26,26,26,,25.8,,
-298,4/5/2022 0:00,Los Angeles Lakers,Phoenix Suns,22,24,22,23,23,,22.8,,
-299,4/5/2022 0:00,Memphis Grizzlies,Utah Jazz,25,28,26,25,26,,26,,
-300,4/5/2022 0:00,Milwaukee Bucks,Chicago Bulls,23,24,22,23,22,,22.8,,
-301,4/5/2022 0:00,New Orleans Pelicans,Sacramento Kings,22,24,22,23,21,,22.4,,
-302,4/5/2022 0:00,Philadelphia 76ers,Indiana Pacers,25,25,25,25,26,,25.2,,
-303,4/5/2022 0:00,Portland Trail Blazers,Oklahoma City Thunder,27,30,28,28,25,,27.6,,
-304,4/5/2022 0:00,San Antonio Spurs,Denver Nuggets,25,27,25,25,25,,25.4,,
-305,4/5/2022 0:00,Washington Wizards,Minnesota Timberwolves,25,27,26,26,26,,26,,
+294,4/5/2022 0:00,Atlanta Hawks,Toronto Raptors,25,24,25,24,26,24.5,24.8,-125,-110
+295,4/5/2022 0:00,Charlotte Hornets,Miami Heat,26,28,27,27,26,26.5,26.8,-140,105
+296,4/5/2022 0:00,Cleveland Cavaliers,Orlando Magic,24,25,25,24,24,24.5,24.4,110,-150
+297,4/5/2022 0:00,Houston Rockets,Brooklyn Nets,26,25,26,26,26,24.5,25.8,-150,110
+298,4/5/2022 0:00,Los Angeles Lakers,Phoenix Suns,22,24,22,23,23,24.5,22.8,110,-150
+299,4/5/2022 0:00,Memphis Grizzlies,Utah Jazz,25,28,26,25,26,26.5,26,-105,-130
+300,4/5/2022 0:00,Milwaukee Bucks,Chicago Bulls,23,24,22,23,22,24.5,22.8,-125,-105
+301,4/5/2022 0:00,New Orleans Pelicans,Sacramento Kings,22,24,22,23,21,21.5,22.4,-135,-105
+302,4/5/2022 0:00,Philadelphia 76ers,Indiana Pacers,25,25,25,25,26,24.5,25.2,110,-150
+303,4/5/2022 0:00,Portland Trail Blazers,Oklahoma City Thunder,27,30,28,28,25,24.5,27.6,-155,115
+304,4/5/2022 0:00,San Antonio Spurs,Denver Nuggets,25,27,25,25,25,24.5,25.4,-105,-135
+305,4/5/2022 0:00,Washington Wizards,Minnesota Timberwolves,25,27,26,26,26,24.5,26,-140,105
