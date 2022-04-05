@@ -1,62 +1,39 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+import datetime
 
 
 def load_data():
     predict_cols = ['date', 'visitor', 'home', 'random_forest', 'line', 'over', 'under']
-    predict_df = pd.read_csv('backend/predictions/3p_predictions.csv')[predict_cols]
-    predict_df['date'] = pd.to_datetime(predict_df['date'])
-
-    totals_cols = ['date', 'visitor', 'home', '3p']
-    totals_df = pd.read_csv('backend/data/totals/game_totals.csv')[totals_cols]
-    totals_df = totals_df.groupby(['date', 'visitor', 'home']).aggregate('sum').reset_index()
-    totals_df['date'] = pd.to_datetime(totals_df['date'])
-
-    df = pd.merge(predict_df, totals_df, left_on=['date', 'visitor', 'home'], right_on=['date', 'visitor', 'home'])
+    df = pd.read_csv('backend/predictions/3p_predictions.csv')[predict_cols]
+    df['date'] = pd.to_datetime(df['date'])
+    next_game = df['date'].max()
 
     df['pick'] = np.where(df['random_forest'] > df['line'], 'Over', 'Under')
-    df['potential_payout'] = np.where(
-        df['pick'] == 'Over',
-        df['over'],
-        df['under']
-    )
 
-    df['potential_payout'] = np.where(
-        df['potential_payout'] > 0,
-        df['potential_payout'] / 100,
-        -100 / df['potential_payout']
-    )
-
-    df['outcome'] = np.where(df['3p'] > df['line'], 'Over', 'Under')
-    df['outcome'] = np.where(df['outcome'] == df['pick'], 'HIT', 'BUST')
-    df['outcome'] = np.where(df['3p'] == 0, None, df['outcome'])
-    df['payout'] = np.where(df['outcome'] == 'HIT', df['potential_payout'], -1)
-    df['payout'] = np.where(df['outcome'].isna(), None, df['payout'])
-    df['date'] = df['date'].dt.strftime('%Y-%m-%d')
     df['prediciton'] = df['random_forest']
 
-    return df
+    return df, next_game
 
 
 def app():
     # Header
     st.header('Picks')
 
-    # Date
-    date = st.date_input('Date: ')
-
     # Predictions
-    df = load_data()
+    df, next_game = load_data()
+
+    # Date
+    date = st.date_input('Date: ', next_game)
 
     # Filter on date
-    df = df[df['date'] == str(date)]
+    df = df[df['date'] == datetime.datetime(date.year, date.month, date.day)]
 
     # Rename
-    df = df[['visitor', 'home', 'line', 'prediciton',  'pick', 'outcome', 'payout']]
+    df = df[['visitor', 'home', 'line', 'prediciton',  'pick']]
     df = df.rename(
-        {'visitor': 'Visitor', 'home': 'Home', 'pick': 'Pick', 'prediction': 'Prediction',
-         'line': 'Line', 'outcome': 'Outcome', 'payout': 'Payout'},
+        {'visitor': 'Visitor', 'home': 'Home', 'pick': 'Pick', 'prediction': 'Prediction', 'line': 'Line'},
         axis=1
     )
     df = df.dropna(axis=1, how='all')

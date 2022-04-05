@@ -19,12 +19,12 @@ def load_data():
     df['ml_home'] = df['ml_home'].apply(lambda x: int(float(x)))
     df['ml_visitor'] = df['ml_visitor'].apply(lambda x: int(float(x)))
     df['spread'] = df['spread'].apply(lambda x: x if x == 'pk' else float(x))
-    df['total'] = df['total'].apply(lambda x: float(x))
+    df['total'] = df['total'].apply(lambda x: x if x == '-' else float(x))
 
-    today = datetime.today()
-    df = df[df['date'] == datetime(today.year, today.month, today.day)].drop(['date'], axis=1)
+    next_game = odds['date'].max()
+    df = df[df['date'] == next_game].drop(['date'], axis=1)
 
-    return df
+    return df, next_game
 
 
 def logo_path(team):
@@ -73,8 +73,8 @@ def create_matchups(df):
     # Feature engineer spreads and totals
     df['spread_home'] = np.where(df['ml_home'] > 0, df['spread'], df['spread'] * -1)
     df['spread_visitor'] = np.where(df['ml_visitor'] > 0, df['spread'], df['spread'] * -1)
-    df['over'] = df['total'].apply(lambda x: f'o{x}')
-    df['under'] = df['total'].apply(lambda x: f'u{x}')
+    df['over'] = df['total'].apply(lambda x: '--------' if x == '-' else f'o{x}')
+    df['under'] = df['total'].apply(lambda x: '--------' if x == '-' else f'u{x}')
 
     # Create matchups
     matchups = []
@@ -110,22 +110,61 @@ def create_matchups(df):
 
     df = pd.DataFrame(matchup_deatils)
 
-    return matchups, df
-
-
-def app():
-    # Header
-    st.header(f'Matchups ({date.today()})')
-
-    # Load data
-    df = load_data()
-
-    # Matchups
-    matchups, df = create_matchups(df)
-
     # Logos
     df = HTML(df.to_html(escape=False, formatters=dict(logo=path_to_image_html)))
 
+    return matchups, df
+
+
+def graph_matchups(matchups):
+    matchup = st.selectbox(
+        'Matchup: ',
+        matchups
+    )
+
+    # Statistical categories
+    stats = {'Scoring': ['Pts per Game', '1Q Pts', '2Q Pts', '3Q Pts', '4Q Pts'],
+             'Shooting': ['FG Made per Game', 'FG Attempted per Game', 'FG %',
+                          '3P Made per Game', '3P Attempted per Game', '3P %',
+                          'FT Made per Game', 'FT Attempted per Game', 'FT %'],
+             'Rebounding': ['ORB per Game', 'DRB per Game', 'TRB per Game'],
+             'Blocks and Steals': ['Blk per Game', 'Stl per Game'],
+             'Assists and Turnovers': ['Ast per Game', 'TOV per Game'],
+             'Scoring Defense': ['Opponent Pts per Game',
+                                 'Opponent 1Q Pts', 'Opponent 2Q Pts',
+                                 'Opponent 3Q Pts', 'Opponent 4Q Pts'],
+             'Shooting Defense': ['Opponent FG Made per Game', 'Opponent FG Attempted per Game', 'Opponent FG %',
+                                  'Opponent 3P Made per Game', 'Opponent 3P Attempted per Game', 'Opponent 3P %',
+                                  'Opponent FT Made per Game', 'Opponent FT Attempted per Game', 'Opponent FT %']
+             }
+
+    category = st.selectbox(
+        'Stats',
+        ['Scoring', 'Shooting', 'Rebounding', 'Blocks and Steals',
+         'Assists and Turnovers', 'Scoring Defense', 'Shooting Defense']
+    )
+
+    stat = st.selectbox(
+        category,
+        stats[category]
+    )
+
+
+
+
+def app():
+    # Load data
+    df, next_game = load_data()
+
+    # Header
+    st.header(f'Matchups ({next_game.month}/{next_game.day}/{next_game.year})')
+
+    # Matchups
+    matchups, df = create_matchups(df)
     st.write(df)
+
+    # Graph matchup
+    graph_matchups(matchups)
+
 
 
