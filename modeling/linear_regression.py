@@ -8,14 +8,14 @@ from datetime import date
 
 def load_data():
     # Paths
-    shooting_path = '../backend/data/inputs/3p/shooting.csv'
-    game_totals_path = '../backend/data/inputs/3p/game_totals.csv'
-    game_details_path = '../backend/data/inputs/3p/game_details.csv'
+    shooting_path = 'backend/data/inputs/3p/shooting.csv'
+    game_totals_path = 'backend/data/inputs/3p/game_totals.csv'
+    game_details_path = 'backend/data/inputs/3p/game_details.csv'
 
     # Read files
-    shooting_df = pd.read_csv(shooting_path)
-    game_totals_df = pd.read_csv(game_totals_path)
-    game_details_df = pd.read_csv(game_details_path)
+    shooting_df = pd.read_csv(shooting_path).drop(['Unnamed: 0'], axis=1)
+    game_totals_df = pd.read_csv(game_totals_path).drop(['Unnamed: 0'], axis=1)
+    game_details_df = pd.read_csv(game_details_path).drop(['Unnamed: 0'], axis=1)
 
     # Merge files
     cols_to_use = list(game_totals_df.columns.difference(shooting_df.columns)) + ['date', 'visitor', 'home']
@@ -30,6 +30,8 @@ def load_data():
                   right_on=['date', 'visitor', 'home'],
                   how='left')
 
+    df['date'] = pd.to_datetime(df['date'])
+
     return df.fillna(0)
 
 
@@ -38,12 +40,9 @@ def linear_model():
     data = load_data()
 
     # Extract current games
-    data['date'] = data['date'].apply(
-        lambda x: date(int(x.split('-')[0]), int(x.split('-')[1]), int(x.split('-')[2]))
-    )
-    current_date = date.today()
-    today_games = data[data['date'] == current_date].drop(['date', 'visitor', 'home', 'target'], axis=1)
-    data = data[data['date'] != current_date].drop(['date', 'visitor', 'home'], axis=1)
+    next_game = data['date'].max()
+    next_slate = data[data['date'] == next_game].drop(['date', 'visitor', 'home', 'target'], axis=1)
+    data = data[data['date'] != next_game].drop(['date', 'visitor', 'home'], axis=1)
 
     # Target and features
     y = data.iloc[:, 0]
@@ -53,7 +52,7 @@ def linear_model():
     scale = StandardScaler()
     scale.fit(X)
     X = scale.transform(X)
-    today_games = scale.transform(today_games)
+    next_slate = scale.transform(next_slate)
 
     # Split data into testing and training sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -65,7 +64,7 @@ def linear_model():
     # Evaluate model
     evaluate_model(X_test, y_test, model)
 
-    return model.predict(today_games)
+    return model.predict(next_slate)
 
 
 def evaluate_model(X_test, y_test, model):

@@ -34,6 +34,7 @@ def load_data():
     df['payout'] = np.where(df['outcome'] == 'HIT', df['potential_payout'], -1)
     df['payout'] = np.where(df['outcome'].isna(), None, df['payout'])
     df['date'] = df['date'].dt.strftime('%Y-%m-%d')
+    df['prediciton'] = df['random_forest']
 
     return df
 
@@ -52,10 +53,10 @@ def app():
     df = df[df['date'] == str(date)]
 
     # Rename
-    df = df[['visitor', 'home', 'line', 'pick', 'outcome', 'payout']]
+    df = df[['visitor', 'home', 'line', 'prediciton',  'pick', 'outcome', 'payout']]
     df = df.rename(
-        {'visitor': 'Visitor', 'home': 'Home', 'pick': 'Pick', 'line':
-            'Line', 'outcome': 'Outcome', 'payout': 'Payout'},
+        {'visitor': 'Visitor', 'home': 'Home', 'pick': 'Pick', 'prediction': 'Prediction',
+         'line': 'Line', 'outcome': 'Outcome', 'payout': 'Payout'},
         axis=1
     )
     df = df.dropna(axis=1, how='all')

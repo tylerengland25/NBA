@@ -191,32 +191,6 @@ def scrape_month(season, month, latest_date, current_date):
                 players_df = scrape_game(link, game_data)
                 for key in month_df:
                     month_df[key] = month_df[key].append(players_df[key], ignore_index=True)
-            elif game_date == current_date:
-                for key in month_df:
-                    month_df[key] = month_df[key].append(
-                        {'date': game_data['date'], 'visitor': game_data['visitor'],
-                         'home': game_data['home'], 'team': 1, 'starter': 1
-                         },
-                        ignore_index=True
-                    )
-                    month_df[key] = month_df[key].append(
-                        {'date': game_data['date'], 'visitor': game_data['visitor'],
-                         'home': game_data['home'], 'team': 1, 'starter': 0
-                         },
-                        ignore_index=True
-                    )
-                    month_df[key] = month_df[key].append(
-                        {'date': game_data['date'], 'visitor': game_data['visitor'],
-                         'home': game_data['home'], 'team': 0, 'starter': 1
-                         },
-                        ignore_index=True
-                    )
-                    month_df[key] = month_df[key].append(
-                        {'date': game_data['date'], 'visitor': game_data['visitor'],
-                         'home': game_data['home'], 'team': 0, 'starter': 0
-                         },
-                        ignore_index=True
-                    )
             elif game_date > current_date:
                 return month_df
 
@@ -277,10 +251,10 @@ def main():
     for key in game_details_label:
         if game_details_label[key] is None:
             df['advanced_details'] = \
-                pd.read_csv('../../backend/data/details/advanced_details.csv').drop(['Unnamed: 0'], axis=1)
+                pd.read_csv('backend/data/details/advanced_details.csv').drop(['Unnamed: 0'], axis=1)
         else:
             df['game_details' + game_details_label[key]] = \
-                pd.read_csv(f'../../backend/data/details/game_details{game_details_label[key]}.csv').drop(
+                pd.read_csv(f'backend/data/details/game_details{game_details_label[key]}.csv').drop(
                     ['Unnamed: 0'], axis=1
                 )
 
@@ -291,10 +265,10 @@ def main():
     for key in game_totals_label:
         if game_totals_label[key] is None:
             df['advanced_totals'] = \
-                pd.read_csv('../../backend/data/totals/advanced_totals.csv').drop(['Unnamed: 0'], axis=1)
+                pd.read_csv('backend/data/totals/advanced_totals.csv').drop(['Unnamed: 0'], axis=1)
         else:
             df[game_totals_label[key] + '_totals'] = \
-                pd.read_csv(f'../../backend/data/totals/{game_totals_label[key]}_totals.csv').drop(['Unnamed: 0'], axis=1)
+                pd.read_csv(f'backend/data/totals/{game_totals_label[key]}_totals.csv').drop(['Unnamed: 0'], axis=1)
 
     dates = pd.to_datetime(df['game_details']['date'])
 
@@ -318,10 +292,10 @@ def main():
 
         if key.split('_')[1] == 'totals':
             df[key] = df[key].drop_duplicates(['date', 'visitor', 'home', 'team'], keep='last')
-            df[key].to_csv('../../backend/data/totals/' + key + '.csv')
+            df[key].to_csv('backend/data/totals/' + key + '.csv')
         else:
             df[key] = df[key].drop_duplicates(['date', 'visitor', 'home', 'team', 'starter', 'player'], keep='last')
-            df[key].to_csv('../../backend/data/details/' + key + '.csv')
+            df[key].to_csv('backend/data/details/' + key + '.csv')
 
 
 if __name__ == '__main__':

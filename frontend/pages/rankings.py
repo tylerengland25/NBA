@@ -40,15 +40,15 @@ def last_1_avg(df, dates, col):
 
 
 def filter_df(category, stat):
-    stat_cols = {'Pts per Game': 'final', '1Q Pts': '1q', '2Q Pts': '2q', '3Q Pts': '3q', '4Q Pts': '4q',
+    stat_cols = {'Pts per Game': 'final', '1Q Pts': 'q1', '2Q Pts': 'q2', '3Q Pts': 'q3', '4Q Pts': 'q4',
                  'FG Made per Game': 'fg', 'FG Attempted per Game': 'fga', 'FG %': 'fg_perc',
                  '3P Made per Game': '3p', '3P Attempted per Game': '3pa', '3P %': '3p_perc',
                  'FT Made per Game': 'ft', 'FT Attempted per Game': 'fta', 'FT %': 'ft_perc',
                  'ORB per Game': 'orb', 'DRB per Game': 'drb', 'TRB per Game': 'trb',
                  'Blk per Game': 'blk', 'Stl per Game': 'stl', 'Ast per Game': 'ast', 'TOV per Game': 'tov',
                  'Opponent Pts per Game': 'final_opp',
-                 'Opponent 1Q Pts': '1q_opp', 'Opponent 2Q Pts': '2q_opp',
-                 'Opponent 3Q Pts': '3q_opp', 'Opponent 4Q Pts': '4q_opp',
+                 'Opponent 1Q Pts': 'q1_opp', 'Opponent 2Q Pts': 'q2_opp',
+                 'Opponent 3Q Pts': 'q3_opp', 'Opponent 4Q Pts': 'q4_opp',
                  'Opponent FG Made per Game': 'fg_opp', 'Opponent FG Attempted per Game': 'fga_opp',
                  'Opponent FG %': 'fg_perc_opp', 'Opponent 3P Made per Game': '3p_opp',
                  'Opponent 3P Attempted per Game': '3pa_opp', 'Opponent 3P %': '3p_perc_opp',
@@ -92,14 +92,18 @@ def filter_df(category, stat):
     if 'perc' in col:
         df[col] = (df[col.split('_')[0]] / df[col.split('_')[0] + 'a']) * 100
 
-    ascend = True if category == 'Shooting Defense' or category == 'Scoring Defense' else False
-    df = df[['team', col]].sort_values(col, ascending=ascend)
-
     # Merge last 3 and last 1
+    df = df[['team', col]]
     df = pd.merge(df, last_3, left_on=['team'], right_on=['team'])
     df = pd.merge(df, last_1, left_on=['team'], right_on=['team'])
 
+    # Sort
+    ascend = True if category == 'Shooting Defense' or category == 'Scoring Defense' else False
+    df = df.sort_values(col, ascending=ascend)
+
     df = df.rename({'team': 'Team', col: '2021', 'last_3': 'Last 3', 'last_1': 'Last 1'}, axis=1)
+    df = df.reset_index().drop(['index'], axis=1)
+    df.index += 1
 
     return df
 

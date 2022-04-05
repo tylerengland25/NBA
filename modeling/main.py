@@ -19,20 +19,18 @@ def main():
 
     # Extract current games
     data = load_data()
-    data['date'] = data['date'].apply(
-        lambda x: date(int(x.split('-')[0]), int(x.split('-')[1]), int(x.split('-')[2]))
-    )
-    current_date = date.today()
-    today_games = data[data['date'] == current_date]
+    # Extract current games
+    next_game = data['date'].max()
+    next_slate = data[data['date'] == next_game]
 
-    df = today_games[['date', 'visitor', 'home']].copy()
+    df = next_slate[['date', 'visitor', 'home']].copy()
     df.loc[:, 'linear'] = [round(x) for x in linear]
     df.loc[:, 'decision_tree'] = [round(x) for x in decision_tree]
     df.loc[:, 'gradient_boosted'] = [round(x) for x in gradient_boosted]
     df.loc[:, 'neural_network'] = [round(x) for x in neural_network]
     df.loc[:, 'random_forest'] = [round(x) for x in random_forest]
 
-    predictions = pd.read_csv('../backend/predictions/3p_predictions.csv').drop(['Unnamed: 0'], axis=1)
+    predictions = pd.read_csv('backend/predictions/3p_predictions.csv').drop(['Unnamed: 0'], axis=1)
     predictions['date'] = predictions['date'].apply(
         lambda x: date(int(x.split('/')[2]), int(x.split('/')[0]), int(x.split('/')[1]))
     )
@@ -42,7 +40,7 @@ def main():
         (predictions['linear'] + predictions['decision_tree'] + predictions['gradient_boosted'] +
          predictions['neural_network'] + predictions['random_forest']) / 5
 
-    predictions.to_csv('../backend/predictions/3p_predictions.csv')
+    predictions.to_csv('backend/predictions/3p_predictions.csv')
 
 
 if __name__ == '__main__':

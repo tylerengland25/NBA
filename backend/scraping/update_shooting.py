@@ -92,17 +92,6 @@ def scrape_month(season, month, latest_date, current_date):
             if latest_date <= game_date < current_date:
                 link = row_data[6].a["href"]
                 month_df = month_df.append(scrape_game(link, game_data), ignore_index=True)
-            elif game_date == current_date:
-                month_df = month_df.append(
-                    {'date': game_data['date'], 'visitor': game_data['visitor'],
-                     'home': game_data['home'], 'team': 1, 'quarter': 'total'},
-                    ignore_index=True
-                )
-                month_df = month_df.append(
-                    {'date': game_data['date'], 'visitor': game_data['visitor'],
-                     'home': game_data['home'], 'team': 0, 'quarter': 'total'},
-                    ignore_index=True
-                )
             elif game_date > current_date:
                 return month_df
 
@@ -125,7 +114,7 @@ def scrape_season(season, months, latest_date, current_date):
 
 
 def main():
-    df = pd.read_csv('../../backend/data/shooting.csv').drop(['Unnamed: 0'], axis=1)
+    df = pd.read_csv('backend/data/shooting.csv').drop(['Unnamed: 0'], axis=1)
 
     dates = pd.to_datetime(df['date'])
 
@@ -146,7 +135,7 @@ def main():
     df = df.append(scrape_season(season, months, latest_date, current_date), ignore_index=True)
     df = df.drop_duplicates(['date', 'visitor', 'home', 'team', 'quarter'], keep='last')
 
-    df.to_csv('../../backend/data/shooting.csv')
+    df.to_csv('backend/data/shooting.csv')
 
 
 if __name__ == '__main__':
