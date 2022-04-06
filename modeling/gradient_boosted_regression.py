@@ -2,7 +2,6 @@ import pandas as pd
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
-from datetime import date
 
 
 def load_data():
@@ -28,6 +27,8 @@ def load_data():
                   left_on=['date', 'visitor', 'home'],
                   right_on=['date', 'visitor', 'home'],
                   how='left')
+
+    df['date'] = pd.to_datetime(df['date'])
 
     return df.fillna(0)
 

@@ -66,9 +66,33 @@ def logo_path(team):
     return urls[team]
 
 
-def path_to_image_html(path):
-    width = 70
-    return f'<img src={path} style=max-height:{width}px;"/>'
+def path_to_image_html(path, team):
+    width = 40
+    html = f'<div><div style="float: left"><img src={path} style=max-height:{width}px;"/></div><div>{team}</div></div>'
+    return html
+
+
+def style_matchups(df):
+    # Logos
+    df['matchup'] = df.apply(lambda row: path_to_image_html(row['logo'], row['matchup']), axis=1)
+
+    # Rename columns to keep
+    df = df.rename(
+        {'matchup': 'Matchup', 'time': 'Time', 'line': 'Line', 'total': 'Total', 'spread': 'Spread'},
+        axis=1
+    )
+
+    df = HTML(
+        df.to_html(
+            escape=False,
+            index=False,
+            columns=['Matchup', 'Time', 'Line', 'Total', 'Spread'],
+            col_space={'Matchup': 350, 'Line': 30, 'Total': 30, 'Spread': 30},
+            justify='left'
+        )
+    )
+
+    return df
 
 
 def create_matchups(df):
@@ -94,17 +118,17 @@ def create_matchups(df):
         matchup_deatils['time'].append('')
 
         matchup_deatils['line'].append(
-            f'+{game.ml_visitor}' if game.ml_visitor > 0 else game.ml_visitor
+            f'+{game.ml_visitor}' if game.ml_visitor > 0 else str(game.ml_visitor)
         )
         matchup_deatils['line'].append(
-            f'+{game.ml_home}' if game.ml_home > 0 else game.ml_home
+            f'+{game.ml_home}' if game.ml_home > 0 else str(game.ml_home)
         )
 
         matchup_deatils['spread'].append(
-            f'+{game.spread_home}' if game.spread_home > 0 else game.spread_home
+            f'+{game.spread_home}' if game.spread_home > 0 else str(game.spread_home)
         )
         matchup_deatils['spread'].append(
-            f'+{game.spread_visitor}' if game.spread_visitor > 0 else game.spread_visitor
+            f'+{game.spread_visitor}' if game.spread_visitor > 0 else str(game.spread_visitor)
         )
 
         matchup_deatils['total'].append(game.over)
@@ -112,8 +136,8 @@ def create_matchups(df):
 
     df = pd.DataFrame(matchup_deatils)
 
-    # Logos
-    df = HTML(df.to_html(escape=False, formatters=dict(logo=path_to_image_html)))
+    # Style matchups
+    df = style_matchups(df)
 
     return matchups, df
 
@@ -159,9 +183,9 @@ def load_graph_data(category, stat, teams):
     df = df[df['team'] != df['team_opp']]
 
     home_df = df[df['team'] == teams['home']][['date', col]]
-    home_df['sma_5'] = home_df.iloc[:, 1].rolling(window=5).mean()
+    home_df['sma_10'] = home_df.iloc[:, 1].rolling(window=10).mean()
     visitor_df = df[df['team'] == teams['visitor']][['date', col]]
-    visitor_df['sma_5'] = visitor_df.iloc[:, 1].rolling(window=5).mean()
+    visitor_df['sma_10'] = visitor_df.iloc[:, 1].rolling(window=10).mean()
 
     return home_df, visitor_df
 
@@ -177,14 +201,14 @@ def graph(home_df, visitor_df, teams, stat):
     sns.lineplot(
         data=home_df,
         x='date',
-        y='sma_5',
+        y='sma_10',
         color=colors['home'][0],
         label=teams['home']
     )
     sns.lineplot(
         data=visitor_df,
         x='date',
-        y='sma_5',
+        y='sma_10',
         color=colors['visitor'][1] if colors['home'][0] == colors['visitor'][0] else colors['visitor'][0],
         label=teams['visitor']
     )
@@ -192,6 +216,7 @@ def graph(home_df, visitor_df, teams, stat):
     plt.ylabel(stat, fontsize=20)
     plt.xticks(fontsize=15, rotation=25)
     plt.yticks(fontsize=15)
+    plt.legend(fontsize='20')
 
     return fig
 
@@ -221,7 +246,7 @@ def team_colors(teams):
         'Denver Nuggets': ('yellow', 'blue'),
         'Detroit Pistons': ('red', 'blue'),
         'Miami Heat': ('pink', 'black'),
-        'Phoenix Suns': ('purple', 'orange'),
+        'Phoenix Suns': ('orange', 'purple'),
         'Charlotte Hornets': ('grey', 'blue'),
         'Atlanta Hawks': ('black', 'red'),
         'New York Knicks': ('orange', 'blue'),

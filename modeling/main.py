@@ -1,5 +1,4 @@
 import pandas as pd
-from datetime import date
 
 from linear_regression import linear_model
 from decision_tree_regression import decision_tree_model
@@ -31,9 +30,7 @@ def main():
     df.loc[:, 'random_forest'] = [round(x) for x in random_forest]
 
     predictions = pd.read_csv('backend/predictions/3p_predictions.csv').drop(['Unnamed: 0'], axis=1)
-    predictions['date'] = predictions['date'].apply(
-        lambda x: date(int(x.split('/')[2]), int(x.split('/')[0]), int(x.split('/')[1]))
-    )
+    predictions['date'] = pd.to_datetime(predictions['date'])
     predictions = predictions.append(df, ignore_index=True)
     predictions = predictions.drop_duplicates(['date', 'visitor', 'home'], keep='last')
     predictions['avg'] = \
