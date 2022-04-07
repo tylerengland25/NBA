@@ -1,8 +1,7 @@
 import pandas as pd
 import streamlit as st
-import numpy as np
 from IPython.display import HTML
-
+from datetime import datetime
 
 
 def load_data():
@@ -13,16 +12,17 @@ def load_data():
     odds['date'] = pd.to_datetime(odds['date'])
 
     df = pd.merge(
-        schedule, odds, left_on=['date', 'visitor', 'home'], right_on=['date', 'visitor', 'home']
+        schedule, odds, left_on=['date', 'visitor', 'home'], right_on=['date', 'visitor', 'home'], how='left'
     )
+
     # Cast to types
-    df['ml_home'] = df['ml_home'].apply(lambda x: int(float(x)))
-    df['ml_visitor'] = df['ml_visitor'].apply(lambda x: int(float(x)))
-    df['spread'] = df['spread'].apply(lambda x: x if x == 'pk' else float(x))
+    df = df.fillna('-')
+    df['ml_home'] = df['ml_home'].apply(lambda x: x if x == '-' else int(float(x)))
+    df['ml_visitor'] = df['ml_visitor'].apply(lambda x: x if x == '-' else int(float(x)))
+    df['spread'] = df['spread'].apply(lambda x: x if x == 'pk' or x == '-' else float(x))
     df['total'] = df['total'].apply(lambda x: x if x == '-' else float(x))
 
     next_game = odds['date'].max()
-    df = df[df['date'] == next_game].drop(['date'], axis=1)
 
     return df, next_game
 
@@ -84,21 +84,46 @@ def style_matchups(df):
         df.to_html(
             escape=False,
             index=False,
+            header=True,
             columns=['Matchup', 'Time', 'Line', 'Total', 'Spread'],
-            col_space={'Matchup': 350, 'Line': 30, 'Total': 30, 'Spread': 30},
-            justify='left'
+            col_space={'Matchup': 250, 'Line': 30, 'Total': 30, 'Spread': 30},
+            justify='center'
+        ).replace(
+            '<tr>', '<tr align="center">'
         )
     )
 
     return df
 
 
-def create_matchups(df):
+def spread(ml, s):
+    if s == 'pk':
+        return s
+    elif ml == '-':
+        return '--------'
+    elif ml > 0:
+        return str(s)
+    else:
+        return str(s * -1)
+
+
+def schedule(df, date):
+    # Filter on date
+    df = df[df['date'] == datetime(date.year, date.month, date.day)].drop(['date'], axis=1)
+
     # Feature engineer spreads and totals
-    df['spread_home'] = np.where(df['ml_home'] > 0, df['spread'], df['spread'] * -1)
-    df['spread_visitor'] = np.where(df['ml_visitor'] > 0, df['spread'], df['spread'] * -1)
+    df['spread_home'] = df[['ml_home', 'spread']].apply(
+        lambda row: spread(row['ml_home'], row['spread']),
+        axis=1
+    )
+    df['spread_visitor'] = df[['ml_visitor', 'spread']].apply(
+        lambda row: spread(row['ml_visitor'], row['spread']),
+        axis=1
+    )
     df['over'] = df['total'].apply(lambda x: '--------' if x == '-' else f'o{x}')
     df['under'] = df['total'].apply(lambda x: '--------' if x == '-' else f'u{x}')
+    df['ml_visitor'] = df['ml_visitor'].apply(lambda x: '--------' if x == '-' else str(x))
+    df['ml_home'] = df['ml_home'].apply(lambda x: '--------' if x == '-' else str(x))
 
     # Create matchups
     matchup_deatils = {'logo': [], 'matchup': [], 'time': [], 'line': [], 'spread': [], 'total': []}
@@ -113,17 +138,25 @@ def create_matchups(df):
         matchup_deatils['time'].append('')
 
         matchup_deatils['line'].append(
-            f'+{game.ml_visitor}' if game.ml_visitor > 0 else str(game.ml_visitor)
+            f'+{game.ml_visitor}'
+            if '-' not in game.ml_visitor
+            else game.ml_visitor
         )
         matchup_deatils['line'].append(
-            f'+{game.ml_home}' if game.ml_home > 0 else str(game.ml_home)
+            f'+{game.ml_home}'
+            if '-' not in game.ml_home
+            else game.ml_home
         )
 
         matchup_deatils['spread'].append(
-            f'+{game.spread_home}' if game.spread_home > 0 else str(game.spread_home)
+            f'+{game.spread_visitor}'
+            if '-' not in game.spread_visitor
+            else game.spread_visitor
         )
         matchup_deatils['spread'].append(
-            f'+{game.spread_visitor}' if game.spread_visitor > 0 else str(game.spread_visitor)
+            f'+{game.spread_home}'
+            if '-' not in game.spread_home
+            else game.spread_home
         )
 
         matchup_deatils['total'].append(game.over)
@@ -131,7 +164,7 @@ def create_matchups(df):
 
     df = pd.DataFrame(matchup_deatils)
 
-    # Style matchups
+    # Style
     df = style_matchups(df)
 
     st.write(df)
@@ -142,7 +175,10 @@ def app():
     df, next_game = load_data()
 
     # Header
-    st.header(f'Matchups ({next_game.month}/{next_game.day}/{next_game.year})')
+    st.header(f'Schedule')
+
+    # Date select
+    date = st.date_input('Date: ', next_game)
 
     # Matchups
-    create_matchups(df)
+    schedule(df, date)

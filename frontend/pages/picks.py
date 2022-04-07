@@ -196,7 +196,7 @@ def graph_matchups(matchups, date):
 
 def app():
     # Header
-    st.header('Picks')
+    st.header('Picks:')
 
     # Picks
     matchups, date = picks()
