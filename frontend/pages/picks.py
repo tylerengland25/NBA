@@ -111,7 +111,7 @@ def picks():
         {'visitor': 'Visitor', 'home': 'Home', 'pick': 'Pick', 'prediction': 'Prediction', 'line': 'Line'},
         axis=1
     )
-    df = df.dropna(axis=1, how='all')
+    df = df.fillna('-----')
 
     # Style
     df = style_matchups(df)
