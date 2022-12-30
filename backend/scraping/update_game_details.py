@@ -283,8 +283,8 @@ def main():
 
     current_date = date.today()
 
-    season = 2021
-    months = ["october", "november", "december", "january", "february", "march", "april"]
+    season = 2022
+    months = ["october", "november", "december"]
 
     season_df = scrape_season(season, months, latest_date, current_date)
     for key in df:

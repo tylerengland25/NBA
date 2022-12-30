@@ -38,14 +38,19 @@ def load_data():
         ((df['3p'] < df['line']) & (df['random_forest'] < df['line']))
 
     # Compute models profit per bet
-    df['random_forest_potential_profit'] = np.where(df['random_forest'] > df['line'], df['over'], df['under'])
-
     df['random_forest_potential_profit'] = np.where(
-        df['random_forest_potential_profit'] > 0, df['random_forest_potential_profit'] / 100,
-        -100 / df['random_forest_potential_profit']
+        df['random_forest'] > df['line'], 
+        df['over'].apply(int), 
+        df['under'].apply(int)
     )
 
-    df['random_forest_profit'] = np.where(df['random_forest_hit'], df['random_forest_potential_profit'], -1)
+    df['random_forest_potential_profit'] = np.where(
+        df['random_forest_potential_profit'] > 0, 
+        df['random_forest_potential_profit'] / 100 * df['random_forest_unit'],
+        -100 / df['random_forest_potential_profit'] * df['random_forest_unit']
+    )
+
+    df['random_forest_profit'] = np.where(df['random_forest_hit'], df['random_forest_potential_profit'], -1 * df['random_forest_unit'])
 
     # Compute accumulative profit overtime
     df['random_forest_accumulative_profit'] = df['random_forest_profit'].cumsum()
@@ -54,7 +59,7 @@ def load_data():
 
 
 def prediction_data():
-    predict_cols = ['date', 'visitor', 'home', 'random_forest', 'line', 'over', 'under']
+    predict_cols = ['date', 'visitor', 'home', 'random_forest', 'random_forest_unit', 'line', 'over', 'under']
     predict_df = pd.read_csv('backend/predictions/3p_predictions.csv')[predict_cols]
     predict_df['date'] = pd.to_datetime(predict_df['date'])
 
@@ -68,20 +73,20 @@ def prediction_data():
     df['pick'] = np.where(df['random_forest'] > df['line'], 'Over', 'Under')
     df['potential_payout'] = np.where(
         df['pick'] == 'Over',
-        df['over'],
-        df['under']
+        df['over'].apply(lambda x: float(x) if x != np.NaN else x),
+        df['under'].apply(lambda x: float(x) if x != np.NaN else x)
     )
 
     df['potential_payout'] = np.where(
         df['potential_payout'] > 0,
-        df['potential_payout'] / 100,
-        -100 / df['potential_payout']
+        df['potential_payout'] / 100 * df['random_forest_unit'],
+        -100 / df['potential_payout'] * df['random_forest_unit']
     )
 
     df['outcome'] = np.where(df['3p'] > df['line'], 'Over', 'Under')
     df['outcome'] = np.where(df['outcome'] == df['pick'], 'HIT', 'BUST')
     df['outcome'] = np.where(df['3p'] == 0, None, df['outcome'])
-    df['payout'] = np.where(df['outcome'] == 'HIT', df['potential_payout'], -1)
+    df['payout'] = np.where(df['outcome'] == 'HIT', df['potential_payout'], -1 * df['random_forest_unit'])
     df['payout'] = np.where(df['outcome'].isna(), None, df['payout'])
     df['date'] = df['date'].dt.strftime('%Y-%m-%d')
 
@@ -119,9 +124,25 @@ def app():
     wrong = df[df['random_forest_hit'] == False]['random_forest_hit'].count()
 
     # Format
-    st.subheader(f'Profit: {round(profit, 2)} Units')
-    st.subheader(f'Accuracy: {round((correct / (correct + wrong)) * 100)}%')
-    st.subheader(f'Record: {correct} - {wrong}')
+    cols = st.columns(3)
+    profit_delta = round(df.groupby('date').sum().iloc[-1, :]['random_forest_profit'], 2)
+    correct_delta = \
+        df[(df['date'] < df['date'].max()) & (df['random_forest_hit'] == True)]['random_forest_hit'].count()
+    wrong_delta = \
+        df[(df['date'] < df['date'].max()) & (df['random_forest_hit'] == False)]['random_forest_hit'].count()
+    accuracy_delta = round((correct_delta / (correct_delta + wrong_delta)) * 100)
+
+    cols[0].metric(
+        label=f'Profit',
+        value=f'{round(profit, 2)} Units',
+        delta=profit_delta
+    )
+    cols[1].metric(
+        label=f'Accuracy',
+        value=f'{round((correct / (correct + wrong)) * 100)}%',
+        delta=f'{round(((correct / (correct + wrong)) * 100) - accuracy_delta, 2)}'
+    )
+    cols[2].metric(label=f'Record', value=f'{correct} - {wrong}')
 
     # Graph
     fig = graph(df)

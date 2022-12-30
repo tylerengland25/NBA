@@ -147,8 +147,8 @@ def main():
 
     current_date = date.today()
 
-    season = 2021
-    months = ["october", "november", "december", "january", "february", "march", "april"]
+    season = 2022
+    months = ["december"]
 
     df = df.append(scrape_season(season, months, latest_date, current_date), ignore_index=True)
     df = df.drop_duplicates(['date', 'visitor', 'home', 'team'], keep='last')

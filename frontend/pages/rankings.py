@@ -64,7 +64,7 @@ def filter_df(category, stat):
     col = stat_cols[stat]
 
     # 2021 Season
-    season_start = datetime(2021, 10, 19)
+    season_start = datetime(2022, 10, 1)
     df['date'] = pd.to_datetime(df['date'])
     today = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
     df = df[(df['date'] >= season_start) & (df['date'] < today)]
@@ -101,7 +101,7 @@ def filter_df(category, stat):
     ascend = True if category == 'Shooting Defense' or category == 'Scoring Defense' else False
     df = df.sort_values(col, ascending=ascend)
 
-    df = df.rename({'team': 'Team', col: '2021', 'last_3': 'Last 3', 'last_1': 'Last 1'}, axis=1)
+    df = df.rename({'team': 'Team', col: '2022', 'last_3': 'Last 3', 'last_1': 'Last 1'}, axis=1)
     df = df.reset_index().drop(['index'], axis=1)
     df.index += 1
 

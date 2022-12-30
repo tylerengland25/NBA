@@ -176,10 +176,6 @@ def scrape_month(season, month):
             print("\t\t" + str(row_data[0].text) + ", " + row_data[2].text + " @ " + row_data[4].text)
             game_data = {'date': row_data[0].text, 'visitor': row_data[2].text, 'home': row_data[4].text}
             link = row_data[6].a["href"]
-            if game_data['date'] == 'Sat, Aug 15, 2020' \
-                    and game_data['visitor'] == 'Memphis Grizzlies' \
-                    and game_data['home'] == 'Portland Trail Blazers':
-                print('Debug')
             players_df = scrape_game(link, game_data)
             for key in month_df:
                 month_df[key] = month_df[key].append(players_df[key], ignore_index=True)

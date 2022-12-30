@@ -28,11 +28,11 @@ def load_data():
 
 
 def load_next_slate(total_df):
-    df = pd.read_csv('backend/data/schedules/2021.csv')
+    df = pd.read_csv('backend/data/schedules/2022.csv')
     df['date'] = pd.to_datetime(df['date'])
 
     next_date = set(df['date'].unique()).difference(set(total_df['date'].unique()))
-    next_date = pd.Series(list(next_date)).sort_values(ascending=True).iloc[0]
+    next_date = pd.Series(list(next_date)).min()
 
     games = df[df['date'] == next_date]
 

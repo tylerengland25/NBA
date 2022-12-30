@@ -6,7 +6,7 @@ from datetime import datetime
 
 def load_data():
     # Load data
-    schedule = pd.read_csv('backend/data/schedules/2021.csv').drop(['Unnamed: 0'], axis=1)
+    schedule = pd.read_csv('backend/data/schedules/2022.csv').drop(['Unnamed: 0'], axis=1)
     schedule['date'] = pd.to_datetime(schedule['date'])
     odds = pd.read_csv('backend/data/odds/odds.csv').drop(['Unnamed: 0'], axis=1)
     odds['date'] = pd.to_datetime(odds['date'])

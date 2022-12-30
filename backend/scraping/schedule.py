@@ -58,10 +58,29 @@ def main():
         elif season == 2020:
             scrape_season(season, covid_months[1]).to_csv(f'backend/data/schedules/{season}.csv')
         elif season == 2021:
-            scrape_season(season, months[:-2]).to_csv(f'backend/data/schedules/{season}.csv')
+            scrape_season(season, months).to_csv(f'backend/data/schedules/{season}.csv')
         else:
             scrape_season(season, months).to_csv(f'backend/data/schedules/{season}.csv')
 
 
+def update_schedule(season):
+    months = ["october", "november", "december", "january", "february", "march", "april"]
+    holdout_months = ["december", "january", "february", "march", "april", "may", "june"]
+    covid_months = [["october-2019", "november", "december", "january", "february",
+                     "march", "july", "august", "september", "october-2020"],
+                    ["december", "january", "february", "march", "april", "may", "june", "july"]]
+
+    if season == 2011:
+        scrape_season(season, holdout_months).to_csv(f'backend/data/schedules/{season}.csv')
+    elif season == 2019:
+        scrape_season(season, covid_months[0]).to_csv(f'backend/data/schedules/{season}.csv')
+    elif season == 2020:
+        scrape_season(season, covid_months[1]).to_csv(f'backend/data/schedules/{season}.csv')
+    elif season == 2021:
+        scrape_season(season, months).to_csv(f'backend/data/schedules/{season}.csv')
+    else:
+        scrape_season(season, months).to_csv(f'backend/data/schedules/{season}.csv')
+
+
 if __name__ == '__main__':
-    main()
+    update_schedule(2022)

@@ -10,22 +10,27 @@ from IPython.display import HTML
 
 def load_data():
     # Predictions
-    predict_cols = ['date', 'visitor', 'home', 'random_forest', 'line', 'over', 'under']
+    predict_cols = ['date', 'visitor', 'home', 'random_forest', 'line', 'over', 'under', 'random_forest_unit']
     predict_df = pd.read_csv('backend/predictions/3p_predictions.csv').drop(['Unnamed: 0'], axis=1)[predict_cols]
     predict_df['date'] = pd.to_datetime(predict_df['date'])
     next_game = predict_df['date'].max()
 
     # Schedule
-    schedule_df = pd.read_csv('backend/data/schedules/2021.csv').drop(['Unnamed: 0', 'time'], axis=1)
+    schedule_df = pd.read_csv('backend/data/schedules/2022.csv').drop(['Unnamed: 0', 'time'], axis=1)
     schedule_df['date'] = pd.to_datetime(schedule_df['date'])
 
     df = pd.merge(
-        schedule_df, predict_df, left_on=['date', 'visitor', 'home'], right_on=['date', 'visitor', 'home'], how='left'
+        schedule_df, predict_df, 
+        left_on=['date', 'visitor', 'home'], 
+        right_on=['date', 'visitor', 'home'], 
+        how='left'
     )
 
     df['pick'] = np.where(df['random_forest'] > df['line'], 'Over', 'Under')
 
     df['prediction'] = df['random_forest']
+    
+    df['unit'] = df['random_forest_unit']
 
     return df, next_game
 
@@ -106,9 +111,9 @@ def picks():
     matchups = [f'{row.visitor} @ {row.home}' for index, row in df.iterrows()]
 
     # Rename
-    df = df[['visitor', 'home', 'line', 'prediction', 'pick']]
+    df = df[['visitor', 'home', 'line', 'prediction', 'pick', 'unit']]
     df = df.rename(
-        {'visitor': 'Visitor', 'home': 'Home', 'pick': 'Pick', 'prediction': 'Prediction', 'line': 'Line'},
+        {'visitor': 'Visitor', 'home': 'Home', 'pick': 'Pick', 'unit': 'Unit', 'prediction': 'Prediction', 'line': 'Line'},
         axis=1
     )
     df = df.fillna('-----')
@@ -145,7 +150,7 @@ def load_graph_data(category, stat, teams, date, graph_type):
     col = stat_cols[stat]
 
     # Date Range
-    start_date = datetime(2021, 10, 19)
+    start_date = datetime(2022, 10, 1)
     end_date = datetime(date.year, date.month, date.day)
     df['date'] = pd.to_datetime(df['date'])
     df = df[(df['date'] >= start_date) & (df['date'] < end_date)]
