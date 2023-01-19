@@ -7,10 +7,10 @@ from schedule import update_schedule
 
 def update_all():
     # update_schedule(2022)
-    scrape_shooting()
-    scrape_scoring()
+    # scrape_shooting()
+    # scrape_scoring()
     scrape_game_details()
-    update_odds()
+    # update_odds()
 
 
 if __name__ == '__main__':
