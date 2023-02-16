@@ -1,4 +1,3 @@
 /backend/data/
-scrape_preprocess_model.sh
 *.csv
 /frontend/logos/
