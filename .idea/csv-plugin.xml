@@ -66,13 +66,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\backend\predictions\3p_predictions_algo.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
       </map>
     </option>
   </component>

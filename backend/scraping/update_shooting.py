@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from urllib.request import urlopen
+import requests
 import pandas as pd
 from datetime import date
 
@@ -9,12 +9,13 @@ def scrape_game(link, game_data):
     link = link.split('/')
     link.insert(2, 'shot-chart')
     url = "https://www.basketball-reference.com{}".format('/'.join(link))
-    html = urlopen(url)
+    header = {'User-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36'}
+    html = requests.get(url, headers = header).text
     soup = BeautifulSoup(html, features="lxml")
 
     # Game dataframe
     stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
-             'ast', 'ast_perc']
+            'ast', 'ast_perc']
     cols = ['date', 'visitor', 'home'] + stats
     game_df = pd.DataFrame(columns=cols)
 
@@ -49,9 +50,9 @@ def scrape_game(link, game_data):
 
             game_df = game_df.append(
                 {'date': game_data['date'], 'visitor': game_data['visitor'], 'home': game_data['home'],
-                 'team': team, 'quarter': quarter, 'fg': data[1], 'fga': data[2], 'fg_perc': data[3], '2p': data[4],
-                 '2pa': data[5], '2p_perc': data[6], '3p': data[7], '3pa': data[8], '3p_perc': data[9],
-                 'efg_perc': data[10], 'ast': data[11], 'ast_perc': data[12]},
+                'team': team, 'quarter': quarter, 'fg': data[1], 'fga': data[2], 'fg_perc': data[3], '2p': data[4],
+                '2pa': data[5], '2p_perc': data[6], '3p': data[7], '3pa': data[8], '3p_perc': data[9],
+                'efg_perc': data[10], 'ast': data[11], 'ast_perc': data[12]},
                 ignore_index=True)
 
         team = 1
@@ -63,12 +64,13 @@ def scrape_month(season, month, latest_date, current_date):
     print("\t" + month)
     # Connect to website
     url = "https://www.basketball-reference.com/leagues/NBA_{}_games-{}.html".format(str(season), month)
-    html = urlopen(url)
+    header = {'User-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36'}
+    html = requests.get(url, headers = header).text
     soup = BeautifulSoup(html, features="lxml")
 
     # Month datframe
     stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
-             'ast', 'ast_perc']
+            'ast', 'ast_perc']
     cols = ['date', 'visitor', 'home'] + stats
     month_df = pd.DataFrame(columns=cols)
 
@@ -92,17 +94,6 @@ def scrape_month(season, month, latest_date, current_date):
             if latest_date <= game_date < current_date:
                 link = row_data[6].a["href"]
                 month_df = month_df.append(scrape_game(link, game_data), ignore_index=True)
-            elif game_date == current_date:
-                month_df = month_df.append(
-                    {'date': game_data['date'], 'visitor': game_data['visitor'],
-                     'home': game_data['home'], 'team': 1, 'quarter': 'total'},
-                    ignore_index=True
-                )
-                month_df = month_df.append(
-                    {'date': game_data['date'], 'visitor': game_data['visitor'],
-                     'home': game_data['home'], 'team': 0, 'quarter': 'total'},
-                    ignore_index=True
-                )
             elif game_date > current_date:
                 return month_df
 
@@ -125,7 +116,7 @@ def scrape_season(season, months, latest_date, current_date):
 
 
 def main():
-    df = pd.read_csv('../../backend/data/shooting.csv').drop(['Unnamed: 0'], axis=1)
+    df = pd.read_csv('backend/data/shooting.csv').drop(['Unnamed: 0'], axis=1)
 
     dates = pd.to_datetime(df['date'])
 
@@ -140,13 +131,13 @@ def main():
 
     current_date = date.today()
 
-    season = 2021
-    months = ["october", "november", "december", "january", "february", "march", "april"]
+    season = 2022
+    months = ["december"]
 
     df = df.append(scrape_season(season, months, latest_date, current_date), ignore_index=True)
     df = df.drop_duplicates(['date', 'visitor', 'home', 'team', 'quarter'], keep='last')
 
-    df.to_csv('../../backend/data/shooting.csv')
+    df.to_csv('backend/data/shooting.csv')
 
 
 if __name__ == '__main__':
