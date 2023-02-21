@@ -65,6 +65,7 @@ def scrape_game(link, meta_data):
 
         # Data for player details
         players = table.find('tbody').find_all('tr')
+        rows = []
         for player in players:
             if player == players[5]:
                 starter = 0
@@ -102,7 +103,9 @@ def scrape_game(link, meta_data):
                            'trb_perc': player_data[8], 'ast_perc': player_data[9], 'stl_perc': player_data[10],
                            'blk_perc': player_data[11], 'tov_perc': player_data[12], 'usg_perc': player_data[13],
                            'ortg': player_data[14], 'drtg': player_data[15], 'bpm': player_data[16]}
-                players_df[detail_filename] = players_df[detail_filename].append(row, ignore_index=True)
+                rows.append(row)
+        rows = pd.DataFrame(rows)
+        players_df[detail_filename] = pd.concat([players_df[detail_filename], rows], axis=0, ignore_index=True)
 
         # Data for game totals
         totals_tag = table.find_all('tr')[-1].find_all('td')
@@ -120,7 +123,8 @@ def scrape_game(link, meta_data):
                            'ftr': totals[4], 'orb_perc': totals[5], 'drb_perc': totals[6], 'trb_perc': totals[7],
                            'ast_perc': totals[8], 'stl_perc': totals[9], 'blk_perc': totals[10], 'tov_perc': totals[11],
                            'usg_perc': totals[12], 'ortg': totals[13], 'drtg': totals[14]}
-        players_df[total_filename] = players_df[total_filename].append(team_totals, ignore_index=True)
+        team_totals = pd.DataFrame([team_totals])
+        players_df[total_filename] = pd.concat([players_df[total_filename], team_totals], axis=0, ignore_index=True)
 
         if label == -1:
             team = not team
@@ -190,7 +194,7 @@ def scrape_month(season, month, latest_date, current_date):
                 link = row_data[6].a["href"]
                 players_df = scrape_game(link, game_data)
                 for key in month_df:
-                    month_df[key] = month_df[key].append(players_df[key], ignore_index=True)
+                    month_df[key] = pd.concat([month_df[key], players_df[key]], axis=0, ignore_index=True)
             elif game_date > current_date:
                 return month_df
 
@@ -235,7 +239,8 @@ def scrape_season(season, months, latest_date, current_date):
     for month in months:
         month_df = scrape_month(season + 1, month, latest_date, current_date)
         for key in season_df:
-            season_df[key] = season_df[key].append(month_df[key], ignore_index=True)
+            # season_df[key] = season_df[key].append(month_df[key], ignore_index=True)
+            season_df[key] = pd.concat([season_df[key], month_df[key]], axis=0, ignore_index=True)
 
     season_df['season'] = season
     return season_df
@@ -288,7 +293,7 @@ def main():
 
     season_df = scrape_season(season, months, latest_date, current_date)
     for key in df:
-        df[key] = df[key].append(season_df[key], ignore_index=True)
+        df[key] = pd.concat([df[key], season_df[key]], axis=0, ignore_index=True)
 
         if key.split('_')[1] == 'totals':
             df[key] = df[key].drop_duplicates(['date', 'visitor', 'home', 'team'], keep='last')
