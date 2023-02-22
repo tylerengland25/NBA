@@ -6,7 +6,7 @@ from datetime import date
 
 def scrape_game(link, meta_data):
     # Initialize dataframe
-    players_df = pd.DataFrame()
+    totals_df = pd.DataFrame()
 
     # Connect to website
     url = f"https://www.basketball-reference.com{link}"
@@ -18,43 +18,26 @@ def scrape_game(link, meta_data):
 
     # Find players table and return player stats for each team
     tables = soup.find_all('table')
+    rows = []
     for table in [tables[0], tables[8]]:
-        # Starter: 1, Bench: 0
-        starter = 1
-
-        # Data for player details
-        players = table.find('tbody').find_all('tr')
-        rows = []
-        for player in players:
-            if player == players[5]:
-                starter = 0
-            else:
-                player_tags = player.find_all(['th', 'td'])
-                player_data = [td.text for td in player_tags]
-                if len(player_data) < 21:
-                    row = {'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
-                           'team': int(team), 'starter': starter, 'player': player_data[0], 'mp': 0,
-                           'fg': 0, 'fga': 0, 'fg_perc': 0, '3p': 0, '3pa': 0, '3p_perc': 0,
-                           'ft': 0, 'fta': 0, 'ft_perc': 0, 'orb': 0, 'drb': 0, 'trb': 0,
-                           'ast': 0, 'stl': 0, 'blk': 0, 'tov': 0, 'pf': 0, 'pts': 0, 'plus_minus': 0}
-                else:
-                    row = {'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
-                           'team': int(team), 'starter': starter, 'player': player_data[0], 'mp': player_data[1],
-                           'fg': player_data[2], 'fga': player_data[3], 'fg_perc': player_data[4],
-                           '3p': player_data[5], '3pa': player_data[6], '3p_perc': player_data[7],
-                           'ft': player_data[8], 'fta': player_data[9], 'ft_perc': player_data[10],
-                           'orb': player_data[11], 'drb': player_data[12], 'trb': player_data[13],
-                           'ast': player_data[14], 'stl': player_data[15], 'blk': player_data[16],
-                           'tov': player_data[17], 'pf': player_data[18], 'pts': player_data[19],
-                           'plus_minus': player_data[20]}
-                rows.append(row)
-        rows = pd.DataFrame(rows)
-        players_df = pd.concat([players_df, rows], axis=0, ignore_index=True)
+        # Data for game totals
+        totals_tag = table.find_all('tr')[-1].find_all('td')
+        totals = [td.text for td in totals_tag]
+        team_totals = {
+            'date': meta_data['date'], 'visitor': meta_data['visitor'], 'home': meta_data['home'],
+            'team': int(team), 'ts_perc': totals[1], 'efg_perc': totals[2], '3par': totals[3],
+            'ftr': totals[4], 'orb_perc': totals[5], 'drb_perc': totals[6], 'trb_perc': totals[7],
+            'ast_perc': totals[8], 'stl_perc': totals[9], 'blk_perc': totals[10], 'tov_perc': totals[11],
+            'usg_perc': totals[12], 'ortg': totals[13], 'drtg': totals[14]
+            }
+        
+        rows.append(team_totals)
 
         team = not team
-        
+    rows = pd.DataFrame(rows)
+    totals_df = pd.concat([totals_df, rows], axis=0, ignore_index=True)
 
-    return players_df
+    return totals_df
 
 
 def scrape_month(season, month, latest_date, current_date):
@@ -112,7 +95,7 @@ def scrape_season(season, months, latest_date, current_date):
 
 def update():
     # Load data
-    df = pd.read_csv(f'backend/data/details/game_details.csv')
+    df = pd.read_csv(f'backend/data/totals/game_totals.csv')
 
     # Extract latest date
     dates = pd.to_datetime(df.loc[:, 'date'])
@@ -129,5 +112,5 @@ def update():
     season_df = scrape_season(season, months, latest_date, current_date)
     df = pd.concat([df, season_df], axis=0, ignore_index=True)
 
-    df = df.drop_duplicates(['date', 'visitor', 'home', 'team', 'starter', 'player'], keep='last')
-    df.to_csv('backend/data/details/game_details.csv', index=False)
+    df = df.drop_duplicates(['date', 'visitor', 'home', 'team'], keep='last')
+    df.to_csv('backend/data/totals/game_totals.csv', index=False)
