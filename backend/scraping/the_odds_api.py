@@ -82,6 +82,8 @@ else:
                     'book': book_info['book'], 'last_updated': book_info['last_update']
                 }
                 rows.append(row)
-    lines_df = pd.DataFrame(rows)
+    lines_df = pd.read_csv(PATH_TO_FILE)
+    lines_df = pd.concat([lines_df, pd.DataFrame(rows)], axis=0, ignore_index=True)
+    lines_df.drop_duplicates(subset=['date', 'home', 'away', 'player', 'book'])
     lines_df.to_csv(PATH_TO_FILE, index=False)
             
