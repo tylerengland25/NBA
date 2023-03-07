@@ -114,7 +114,7 @@ def scrape_season(season, months, latest_date, current_date):
 
 def update():
     # Load data
-    df = pd.read_csv('backend/data/shooting.csv').drop(['Unnamed: 0'], axis=1)
+    df = pd.read_csv('backend/data/shooting.csv')
 
     # Extract latest date
     dates = pd.to_datetime(df['date'])
