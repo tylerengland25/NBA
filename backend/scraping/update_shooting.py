@@ -1,31 +1,28 @@
 from bs4 import BeautifulSoup
-import requests
+from urllib.request import urlopen
 import pandas as pd
 from datetime import date
 
 
 def scrape_game(link, game_data):
+    # Initialize dataframe
+    game_df = pd.DataFrame()
+
     # Connect to website
     link = link.split('/')
     link.insert(2, 'shot-chart')
-    url = "https://www.basketball-reference.com{}".format('/'.join(link))
-    header = {'User-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36'}
-    html = requests.get(url, headers = header).text
+    url = f"https://www.basketball-reference.com{'/'.join(link)}"
+    html = urlopen(url)
     soup = BeautifulSoup(html, features="lxml")
-
-    # Game dataframe
-    stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
-            'ast', 'ast_perc']
-    cols = ['date', 'visitor', 'home'] + stats
-    game_df = pd.DataFrame(columns=cols)
 
     # Find shooting table and return quarter shooting stats for both teams
     tables = soup.find_all('table')
     team = 0
     for table in tables:
-        rows = table.find_all('tr')
-        for row in rows[1:]:
-            data = row.find_all(['th', 'td'])
+        rows = []
+        quarters = table.find_all('tr')
+        for quarter in quarters[1:]:
+            data = quarter.find_all(['th', 'td'])
             data = [td.text for td in data]
 
             # Which quarter
@@ -47,53 +44,50 @@ def scrape_game(link, game_data):
                 quarter = 'ot4'
             else:
                 quarter = 'total'
+            
+            row = {
+                'date': game_data['date'], 'visitor': game_data['visitor'], 'home': game_data['home'], 'team': team, 'quarter': quarter, 
+                'fg': data[1], 'fga': data[2], 'fg_perc': data[3], '2p': data[4], '2pa': data[5], '2p_perc': data[6], 
+                '3p': data[7], '3pa': data[8], '3p_perc': data[9], 'efg_perc': data[10], 'ast': data[11], 'ast_perc': data[12]
+            }
+            rows.append(row)
 
-            game_df = game_df.append(
-                {'date': game_data['date'], 'visitor': game_data['visitor'], 'home': game_data['home'],
-                'team': team, 'quarter': quarter, 'fg': data[1], 'fga': data[2], 'fg_perc': data[3], '2p': data[4],
-                '2pa': data[5], '2p_perc': data[6], '3p': data[7], '3pa': data[8], '3p_perc': data[9],
-                'efg_perc': data[10], 'ast': data[11], 'ast_perc': data[12]},
-                ignore_index=True)
-
+        rows = pd.DataFrame(rows)
+        game_df = pd.concat([game_df, rows], axis=0, ignore_index=True)
         team = 1
 
     return game_df
 
 
 def scrape_month(season, month, latest_date, current_date):
+    # Print month
     print("\t" + month)
+
     # Connect to website
     url = "https://www.basketball-reference.com/leagues/NBA_{}_games-{}.html".format(str(season), month)
-    header = {'User-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36'}
-    html = requests.get(url, headers = header).text
+    html = urlopen(url)
     soup = BeautifulSoup(html, features="lxml")
 
-    # Month datframe
-    stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
-            'ast', 'ast_perc']
-    cols = ['date', 'visitor', 'home'] + stats
-    month_df = pd.DataFrame(columns=cols)
+    # Initialize dataframe
+    month_df = pd.DataFrame()
 
     # Find games and iterate to find shooting data
     games = soup.find("table").find_all("tr")[1:]
     for game in games:
         row_data = game.find_all(["th", "td"])
         if len(row_data) > 1:
-            print("\t\t" + str(row_data[0].text) + ", " + row_data[2].text + " @ " + row_data[4].text)
+            # Print game info
             game_data = {'date': row_data[0].text, 'visitor': row_data[2].text, 'home': row_data[4].text}
+            print(f"\t\t{game_data['date']}, {game_data['visitor']} @ {game_data['home']}")
 
             # Check if game date is between latest date and current date
             game_date = pd.to_datetime(game_data['date'])
-            game_date = {
-                'year': pd.to_datetime(game_date).year,
-                'month': pd.to_datetime(game_date).month,
-                'day': pd.to_datetime(game_date).day
-            }
-            game_date = date(game_date['year'], game_date['month'], game_date['day'])
+            game_date = date(game_date.year, game_date.month, game_date.day)
 
             if latest_date <= game_date < current_date:
                 link = row_data[6].a["href"]
-                month_df = month_df.append(scrape_game(link, game_data), ignore_index=True)
+                players_df = scrape_game(link, game_data)
+                month_df = pd.concat([month_df, players_df], axis=0, ignore_index=True)
             elif game_date > current_date:
                 return month_df
 
@@ -101,44 +95,42 @@ def scrape_month(season, month, latest_date, current_date):
 
 
 def scrape_season(season, months, latest_date, current_date):
+    # Print season
     print(season)
-    # Season dataframe
-    stats = ['team', 'quarter', 'fg', 'fga', 'fg_perc', '2p', '2pa', '2p_perc', '3p', '3pa', '3p_perc', 'efg_perc',
-             'ast', 'ast_perc']
-    cols = ['date', 'visitor', 'home'] + stats
-    season_df = pd.DataFrame(columns=cols)
+    
+    # Initialize dataframe
+    season_df = pd.DataFrame()
 
     # Scrape months in season
     for month in months:
-        season_df = season_df.append(scrape_month(season + 1, month, latest_date, current_date), ignore_index=True)
+        month_df = scrape_month(season + 1, month, latest_date, current_date)
+        season_df = pd.concat([season_df, month_df], axis=0, ignore_index=True)
+
+    # Append season to dataframe
+    season_df['season'] = season
 
     return season_df
 
 
-def main():
-    df = pd.read_csv('backend/data/shooting.csv').drop(['Unnamed: 0'], axis=1)
+def update():
+    # Load data
+    df = pd.read_csv('backend/data/shooting.csv')
 
+    # Extract latest date
     dates = pd.to_datetime(df['date'])
+    latest_date = dates.max()
+    latest_date = date(latest_date.year, latest_date.month, latest_date.day)
 
-    latest_date = dates.sort_values(axis=0, ascending=False).unique()[0]
-    latest_date = {
-        'year': pd.to_datetime(latest_date).year,
-        'month': pd.to_datetime(latest_date).month,
-        'day': pd.to_datetime(latest_date).day
-    }
-
-    latest_date = date(latest_date['year'], latest_date['month'], latest_date['day'])
-
+    # Current date to update until
     current_date = date.today()
 
+    # Season an months to scrape
     season = 2022
-    months = ["december"]
+    months = ["october", "november", "december", "january", "february", "march"]
 
-    df = df.append(scrape_season(season, months, latest_date, current_date), ignore_index=True)
+    season_df = scrape_season(season, months, latest_date, current_date)
+    df = pd.concat([df, season_df], axis=0, ignore_index=True)
+
     df = df.drop_duplicates(['date', 'visitor', 'home', 'team', 'quarter'], keep='last')
+    df.to_csv('backend/data/shooting.csv', index=False)
 
-    df.to_csv('backend/data/shooting.csv')
-
-
-if __name__ == '__main__':
-    main()

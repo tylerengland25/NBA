@@ -107,7 +107,7 @@ def update():
 
     # Season and months to scrape
     season = 2022
-    months = ["october", "november", "december", "january", "february"]
+    months = ["october", "november", "december", "january", "february", "march"]
 
     season_df = scrape_season(season, months, latest_date, current_date)
     df = pd.concat([df, season_df], axis=0, ignore_index=True)
