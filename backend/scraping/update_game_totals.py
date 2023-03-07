@@ -17,9 +17,14 @@ def scrape_game(link, meta_data):
     team = False
 
     # Find players table and return player stats for each team
-    tables = soup.find_all('table')
     rows = []
-    for table in [tables[0], tables[8]]:
+    tables = soup.find_all('table')
+    basic_tables = []
+    for table in tables:
+        if " ".join(table['id'].split('-')[-2:]) == "game basic":
+            basic_tables.append(table)
+    
+    for table in basic_tables:
         # Data for game totals
         totals_tag = table.find_all('tr')[-1].find_all('td')
         totals = [td.text for td in totals_tag]
