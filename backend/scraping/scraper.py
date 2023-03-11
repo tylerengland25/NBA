@@ -46,23 +46,17 @@ class MonthScraper(Scraper):
     
     def merge_df(self, df):
         self.df = pd.concat([self.df, df], axis=0, ignore_index=True)
-
-    def date_after(self, game_date):
-        return game_date > self.current_date
     
     def scrape(self):
         games = self.get_games()
         for game in games:
             game_data = self.get_game_data(game)
-            if game_data:
+            game_date = self.convert_date(game_data['date'])
+            if self.date_between(game_date) and game_data:
                 print(f"\t\t{game_data['date']}, {game_data['visitor']} @ {game_data['home']}")
-                game_date = self.convert_date(game_data['date'])
-                if self.date_between(game_date):
-                    link = self.get_game_link(game)
-                    players_df = self.game_scraper(link, game_data).scrape()
-                    self.merge_df(players_df)
-                elif self.date_after(game_date):
-                    return self.df
+                link = self.get_game_link(game)
+                players_df = self.game_scraper(link, game_data).scrape()
+                self.merge_df(players_df)
         return self.df
     
 

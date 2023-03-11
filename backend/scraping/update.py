@@ -10,7 +10,7 @@ def update_all():
     # update_scrape_shooting()
     # update_scrape_scoring()
     update_game_details()
-    update_game_totals()
+    # update_game_totals()
 
 
 if __name__ == '__main__':
