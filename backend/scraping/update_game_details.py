@@ -17,8 +17,13 @@ def scrape_game(link, meta_data):
     team = False
 
     # Find players table and return player stats for each team
+    basic_tables = []
     tables = soup.find_all('table')
-    for table in [tables[0], tables[8]]:
+    for table in tables:
+        if " ".join(table['id'].split('-')[-2:]) == "game basic":
+            basic_tables.append(table)
+    
+    for table in basic_tables:
         # Starter: 1, Bench: 0
         starter = 1
 
@@ -132,5 +137,5 @@ def update():
     season_df = scrape_season(season, months, latest_date, current_date)
     df = pd.concat([df, season_df], axis=0, ignore_index=True)
 
-    df = df.drop_duplicates(['date', 'visitor', 'home', 'team', 'starter', 'player'], keep='last')
+    df = df.drop_duplicates(['date', 'visitor', 'home', 'team', 'player'], keep='last')
     df.to_csv('backend/data/details/game_details.csv', index=False)
