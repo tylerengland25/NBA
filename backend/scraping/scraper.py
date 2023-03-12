@@ -111,10 +111,11 @@ class DetailsScraper(Scraper):
         for table in basic_tables:
             players = self.get_players(table)
             for index, player in enumerate(players):
-                starter = True if index < 5 else False
-                player_data = self.get_player_data(player)
-                stats = self.get_player_stats(player_data, starter)
-                self.merge_df(pd.DataFrame(stats, index=[0]))
+                if index != 5:
+                    starter = True if index < 5 else False
+                    player_data = self.get_player_data(player)
+                    stats = self.get_player_stats(player_data, starter)
+                    self.merge_df(pd.DataFrame(stats, index=[0]))
             self.team = not self.team
         return self.df
     
