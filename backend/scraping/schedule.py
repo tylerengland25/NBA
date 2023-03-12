@@ -1,33 +1,5 @@
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
+from scraper import ScheduleScraper
 import pandas as pd
-
-
-def scrape_month(season, month):
-    # Print month
-    print("\t" + month)
-
-    # Connect to website
-    url = f"https://www.basketball-reference.com/leagues/NBA_{season}_games-{month}.html"
-    html = urlopen(url)
-    soup = BeautifulSoup(html, features="lxml")
-
-    # Initialize dataframe
-    month_df = pd.DataFrame()
-
-    # Find games and iterate to find shooting data
-    games = soup.find("table").find_all("tr")[1:]
-    for game in games:
-        row_data = game.find_all(["th", "td"])
-        if len(row_data) > 1:
-            # Print game info
-            game_data = {'date': row_data[0].text, 'visitor': row_data[2].text, 'home': row_data[4].text}
-            print(f"\t\t{game_data['date']}, {game_data['visitor']} @ {game_data['home']}")
-            
-            game_data = pd.DataFrame([game_data])
-            month_df = pd.concat([month_df, game_data], axis=0, ignore_index=True)
-
-    return month_df
 
 
 def scrape_season(season, months):
@@ -39,7 +11,8 @@ def scrape_season(season, months):
 
     # Scrape months in season
     for month in months:
-        month_df = scrape_month(season + 1, month)
+        scraper = ScheduleScraper(f'https://www.basketball-reference.com/leagues/NBA_{season + 1}_games-{month}.html')
+        month_df = scraper.scrape()
         season_df = pd.concat([season_df, month_df], axis=0, ignore_index=True)
 
     # Append season to dataframe

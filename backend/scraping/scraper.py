@@ -261,3 +261,22 @@ class ShootingScraper(Scraper):
                 self.merge_df(pd.DataFrame(shooting_data, index=[0]))
             self.team = not self.team
         return self.df
+    
+
+class ScheduleScraper(MonthScraper):
+    def __init__(self, url):
+        self.url = url
+        self.soup = self.get_soup()
+        self.df = pd.DataFrame()
+
+    def get_soup(self):
+        html = urlopen(self.url)
+        return BeautifulSoup(html, features="lxml")
+
+    def scrape(self):
+        games = super().get_games()
+        for game in games:
+            game_data = super().get_game_data(game)
+            print(f"\t\t{game_data['date']}, {game_data['visitor']} @ {game_data['home']}")
+            super().merge_df(pd.DataFrame(game_data, index=[0]))
+        return self.df
