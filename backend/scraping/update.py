@@ -8,9 +8,9 @@ from schedule import update_schedule
 def update_all():
     # update_schedule(2022)
     # update_scrape_shooting()
-    # update_scrape_scoring()
+    update_scrape_scoring()
     # update_game_details()
-    update_game_totals()
+    # update_game_totals()
 
 
 if __name__ == '__main__':

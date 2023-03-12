@@ -1,5 +1,5 @@
 from urllib.request import urlopen
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 import pandas as pd
 from datetime import date
 
@@ -157,3 +157,93 @@ class TotalsScraper(Scraper):
             self.team = not self.team
         return self.df
     
+
+class ScoresScraper(Scraper):
+    def __init__(self, url, game_data):
+        super().__init__(f"https://www.basketball-reference.com{url}")
+        self.game_data = game_data
+        self.team = False
+
+    def get_table(self):
+        div = self.soup.find('div', attrs={'id': 'all_line_score'})
+        for element in div(text=lambda text: isinstance(text, Comment)):
+            if BeautifulSoup(element, features="lxml").find('table', attrs={'id': 'line_score'}):
+                return BeautifulSoup(element, features="lxml").find('table', attrs={'id': 'line_score'})
+    
+    def get_scores(self, table):
+        scores = [int(score.text) for score in table.find_all('td')]
+        if len(scores) == 10:
+            home_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 1, 'q1': scores[5], 'q2': scores[6], 'q3': scores[7], 'q4': scores[8],
+                'final': scores[9]
+            }
+            visitor_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 0, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
+                'final': scores[4]
+            }
+        elif len(scores) == 12:
+            home_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 1, 'q1': scores[6], 'q2': scores[7], 'q3': scores[8], 'q4': scores[9],
+                'ot1': scores[10],
+                'final': scores[11]
+            }
+            visitor_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 0, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
+                'ot1': scores[4],
+                'final': scores[5]
+            }
+        elif len(scores) == 14:
+            home_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 1, 'q1': scores[7], 'q2': scores[8], 'q3': scores[9], 'q4': scores[10],
+                'ot1': scores[11], 'ot2': scores[12],
+                'final': scores[13]
+            }
+            visitor_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 0, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
+                'ot1': scores[4], 'ot2': scores[5],
+                'final': scores[6]
+            }
+        elif len(scores) == 16:
+            home_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 1, 'q1': scores[8], 'q2': scores[9], 'q3': scores[10], 'q4': scores[11],
+                'ot1': scores[12], 'ot2': scores[13], 'ot3': scores[14],
+                'final': scores[15]
+            }
+            visitor_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 0, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
+                'ot1': scores[4], 'ot2': scores[5], 'ot3': scores[6],
+                'final': scores[7]
+            }
+        else:
+            home_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 1, 'q1': scores[9], 'q2': scores[10], 'q3': scores[11], 'q4': scores[12],
+                'ot1': scores[13], 'ot2': scores[14], 'ot3': scores[15], 'ot4': scores[16],
+                'final': scores[17]
+            }
+            visitor_row = {
+                'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
+                'team': 0, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
+                'ot1': scores[4], 'ot2': scores[5], 'ot3': scores[6], 'ot4': scores[7],
+                'final': scores[8]
+            }
+
+        return home_row, visitor_row
+    
+    def merge_df(self, df):
+        self.df = pd.concat([self.df, df], axis=0, ignore_index=True)
+
+    def scrape(self):
+        table = self.get_table()
+        home_row, visitor_row = self.get_scores(table)
+        self.merge_df(pd.DataFrame(home_row, index=[0]))
+        self.merge_df(pd.DataFrame(visitor_row, index=[0]))
+        return self.df
