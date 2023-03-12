@@ -162,7 +162,6 @@ class ScoresScraper(Scraper):
     def __init__(self, url, game_data):
         super().__init__(f"https://www.basketball-reference.com{url}")
         self.game_data = game_data
-        self.team = False
 
     def get_table(self):
         div = self.soup.find('div', attrs={'id': 'all_line_score'})
@@ -246,4 +245,46 @@ class ScoresScraper(Scraper):
         home_row, visitor_row = self.get_scores(table)
         self.merge_df(pd.DataFrame(home_row, index=[0]))
         self.merge_df(pd.DataFrame(visitor_row, index=[0]))
+        return self.df
+    
+
+class ShootingScraper(Scraper):
+    def __init__(self, url, game_data):
+        link = url.split('/')
+        link.insert(2, 'shot-chart')
+        link = '/'.join(link)
+        super().__init__(f"https://www.basketball-reference.com{link}")
+        self.game_data = game_data
+        self.team = False
+
+    def get_tables(self):
+        return self.soup.find_all('table')
+    
+    def get_shooting_data(self, data):
+        quarter_dict = {
+            '1st': 'q1', '2nd': 'q2', '3rd': 'q3', '4th': 'q4', 
+            'OT': 'ot1', '2OT': 'ot2', '3OT': 'ot3', '4OT': 'ot4'
+        }
+        shooting_data = {
+            'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'], 
+            'team': self.team, 'quarter': quarter_dict[data[0]], 
+            'fg': data[1], 'fga': data[2], 'fg_perc': data[3], 
+            '2p': data[4], '2pa': data[5], '2p_perc': data[6], 
+            '3p': data[7], '3pa': data[8], '3p_perc': data[9], 
+            'efg_perc': data[10], 'ast': data[11], 'ast_perc': data[12]
+        }
+        return shooting_data
+    
+    def merge_df(self, df):
+        self.df = pd.concat([self.df, df], axis=0, ignore_index=True)
+    
+    def scrape(self):
+        tables = self.get_tables()
+        for table in tables:
+            quarters = table.find_all('tr')[1:-1]
+            for quarter in quarters:
+                data = [x.text for x in quarter.find_all(['td', 'th'])]
+                shooting_data = self.get_shooting_data(data)
+                self.merge_df(pd.DataFrame(shooting_data, index=[0]))
+            self.team = not self.team
         return self.df
