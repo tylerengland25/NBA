@@ -176,36 +176,36 @@ class ScoresScraper(Scraper):
         if len(scores_data) == 5:
             scores = {
                 'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
-                'team': self.team, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
-                'final': scores[4]
+                'team': self.team, 'q1': scores_data[0], 'q2': scores_data[1], 'q3': scores_data[2], 'q4': scores_data[3],
+                'final': scores_data[4]
             }
         elif len(scores_data) == 6:
             scores = {
                 'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
-                'team': self.team, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
-                'ot1': scores[4],
-                'final': scores[5]
+                'team': self.team, 'q1': scores_data[0], 'q2': scores_data[1], 'q3': scores_data[2], 'q4': scores_data[3],
+                'ot1': scores_data[4],
+                'final': scores_data[5]
             }
         elif len(scores_data) == 7:
             scores = {
                 'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
-                'team': self.team, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
-                'ot1': scores[4], 'ot2': scores[5],
-                'final': scores[6]
+                'team': self.team, 'q1': scores_data[0], 'q2': scores_data[1], 'q3': scores_data[2], 'q4': scores_data[3],
+                'ot1': scores_data[4], 'ot2': scores_data[5],
+                'final': scores_data[6]
             }
         elif len(scores_data) == 8:
             scores = {
                 'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
-                'team': self.team, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
-                'ot1': scores[4], 'ot2': scores[5], 'ot3': scores[6],
-                'final': scores[7]
+                'team': self.team, 'q1': scores_data[0], 'q2': scores_data[1], 'q3': scores_data[2], 'q4': scores_data[3],
+                'ot1': scores_data[4], 'ot2': scores_data[5], 'ot3': scores_data[6],
+                'final': scores_data[7]
             }
         else:
             scores = {
                 'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'],
-                'team': self.team, 'q1': scores[0], 'q2': scores[1], 'q3': scores[2], 'q4': scores[3],
-                'ot1': scores[4], 'ot2': scores[5], 'ot3': scores[6], 'ot4': scores[7],
-                'final': scores[8]
+                'team': self.team, 'q1': scores_data[0], 'q2': scores_data[1], 'q3': scores_data[2], 'q4': scores_data[3],
+                'ot1': scores_data[4], 'ot2': scores_data[5], 'ot3': scores_data[6], 'ot4': scores_data[7],
+                'final': scores_data[8]
             }
 
         return scores
