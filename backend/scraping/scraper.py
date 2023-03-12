@@ -55,8 +55,8 @@ class MonthScraper(Scraper):
             if self.date_between(game_date) and game_data:
                 print(f"\t\t{game_data['date']}, {game_data['visitor']} @ {game_data['home']}")
                 link = self.get_game_link(game)
-                players_df = self.game_scraper(link, game_data).scrape()
-                self.merge_df(players_df)
+                game_df = self.game_scraper(link, game_data).scrape()
+                self.merge_df(game_df)
         return self.df
     
 
@@ -117,3 +117,43 @@ class DetailsScraper(Scraper):
                 self.merge_df(pd.DataFrame(stats, index=[0]))
             self.team = not self.team
         return self.df
+    
+
+class TotalsScraper(Scraper):
+    def __init__(self, url, game_data):
+        super().__init__(f"https://www.basketball-reference.com{url}")
+        self.game_data = game_data
+        self.team = False
+
+    def get_basic_tables(self):
+        basic_tables = []
+        tables = self.soup.find_all('table')
+        for table in tables:
+            if " ".join(table['id'].split('-')[-2:]) == "game basic":
+                basic_tables.append(table)
+        return basic_tables
+    
+    def get_totals(self, table):
+        totals = [td.text for td in table.find_all('tr')[-1].find_all('td')]
+        team_totals = {
+            'date': self.game_data['date'], 'visitor': self.game_data['visitor'], 'home': self.game_data['home'], 'team': int(self.team), 
+            'fg': totals[1], 'fga': totals[2], 'fg_perc': totals[3],
+            '3p': totals[4], '3pa': totals[5], '3p_perc': totals[6], 
+            'ft': totals[7], 'fta': totals[8], 'ft_perc': totals[9], 
+            'orb': totals[10], 'drb': totals[11], 'trb': totals[12], 
+            'ast': totals[13], 'stl': totals[14], 'blk': totals[15],
+            'tov': totals[16], 'pf': totals[17], 'pts': totals[18]
+            }
+        return team_totals
+    
+    def merge_df(self, df):
+        self.df = pd.concat([self.df, df], axis=0, ignore_index=True)
+
+    def scrape(self):
+        basic_tables = self.get_basic_tables()
+        for table in basic_tables:
+            team_totals = self.get_totals(table)
+            self.merge_df(pd.DataFrame(team_totals, index=[0]))
+            self.team = not self.team
+        return self.df
+    
